@@ -27,4 +27,8 @@ public class Coordinate {
     public void setAcross(int across) {
         Across = across;
     }
+
+    public void display(){
+        System.out.println("Across: " + Across + " Down: " + Down);
+    }
 }
