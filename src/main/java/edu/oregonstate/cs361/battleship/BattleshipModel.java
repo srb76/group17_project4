@@ -26,6 +26,8 @@ public class BattleshipModel {
     private ArrayList<Coordinate> computerHits;
     private ArrayList<Coordinate> computerMisses;
 
+    private ArrayList<Coordinate> playerShipPoints;
+
 
 
     public BattleshipModel() {
@@ -33,6 +35,8 @@ public class BattleshipModel {
         playerMisses= new ArrayList<>();
         computerHits = new ArrayList<>();
         computerMisses= new ArrayList<>();
+
+        playerShipPoints = new ArrayList<>();
     }
 
     public static BattleshipModel ofStatus(String statusStr) {
@@ -56,40 +60,75 @@ public class BattleshipModel {
         }
     }
 
-    public BattleshipModel placeShip(String shipName, String row, String col, String orientation, BattleshipModel currModel) {
 
-        int rowint = Integer.parseInt(row);
+
+
+    public String placeShip(String shipName, String row, String col, String orientation) {
+        int rowInt = Integer.parseInt(row);
         int colInt = Integer.parseInt(col);
-        if(orientation.equals("horizontal")){
-            if (shipName.equalsIgnoreCase("aircraftcarrier")) {
-                currModel.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint,colInt+4));
-            } if(shipName.equalsIgnoreCase("battleship")) {
-                currModel.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint,colInt+3));
-            } if(shipName.equalsIgnoreCase("Cruiser")) {
-                currModel.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint,colInt+2));
-            } if(shipName.equalsIgnoreCase("destroyer")) {
-                currModel.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint,colInt+1));
-            }if(shipName.equalsIgnoreCase("submarine")) {
-                currModel.getShip(shipName).setLocation(new Coordinate(rowint, colInt), new Coordinate(rowint, colInt + 1));
+        if(rowInt > 10 || colInt > 10)
+            return "Ship Placement out of bounds";
+        int size;
+        int endRowInt;
+        int endColInt;
+        size = getShip(shipName).getLength();
+        Ship testShip = new Ship("test", size);
+        if(orientation.equals("vertical")){
+            endRowInt = rowInt + size - 1;
+            endColInt = colInt;
+            if(endRowInt > 10)
+                return "Ship Placement out of bounds";
+            Coordinate start = new Coordinate(rowInt, colInt);
+            Coordinate end = new Coordinate(endRowInt, endColInt);
+            testShip.setLocation(start, end);
+            for(int i = 0; i > playerShipPoints.size(); i++){
+                if(testShip.covers(playerShipPoints.get(i)));
+                    return "Placement overlaps another ship";
             }
-        }else{
-            //vertical
-                if (shipName.equalsIgnoreCase("aircraftcarrier")) {
-                    currModel.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint+4,colInt));
-                } if(shipName.equalsIgnoreCase("battleship")) {
-                    currModel.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint+3,colInt));
-                } if(shipName.equalsIgnoreCase("Cruiser")) {
-                    currModel.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint+2,colInt));
-                } if(shipName.equalsIgnoreCase("destroyer")) {
-                    currModel.getShip(shipName).setLocation(new Coordinate(rowint,colInt),new Coordinate(rowint+1,colInt));
-                }if(shipName.equalsIgnoreCase("submarine")) {
-                    currModel.getShip(shipName).setLocation(new Coordinate(rowint, colInt), new Coordinate(rowint + 1, colInt));
-                }
+            System.out.println("Size: " + size);
+            for(int i = 0; i < size; i++){
+                Coordinate toAdd = new Coordinate(rowInt + i, colInt);
+                toAdd.display();
+                playerShipPoints.add(toAdd);
+            }
+            getShip(shipName).setLocation(start, end);
+        } else { //horizantal
+            if((colInt + size -1) > 10)
+                return "Ship Placement out of bounds";
+            endRowInt = rowInt;
+            endColInt = colInt + size - 1;
+            if(endColInt > 10 )
+                return "Ship placement out of bounds";
+            Coordinate start = new Coordinate(rowInt, colInt);
+            Coordinate end = new Coordinate(endRowInt, endColInt);
+            testShip.setLocation(start, end);
+            for(int i = 0; i < playerShipPoints.size(); i++){
+                if(testShip.covers(playerShipPoints.get(i)))
+                    return "Placement overlaps another ship";
+            }
+
+            for(int i = 0; i < size; i++){
+                Coordinate toAdd = new Coordinate(rowInt, colInt + i);
+                toAdd.display();
+                playerShipPoints.add(toAdd);
+            }
+            getShip(shipName).setLocation(start, end);
         }
-        return currModel;
+
+        return null;
     }
 
-    public void shootAtComputer(int row, int col) {
+    public String shootAtComputer(int row, int col) {
+        if(row > 10 || col > 10)
+            return "That Shot is off the board!";
+        for(int i = 0; i < computerMisses.size(); i++){
+            if(row == computerMisses.get(i).getDown() && col == computerMisses.get(i).getAcross())
+                return "You have already fired there!";
+        }
+        for(int i = 0; i < computerHits.size(); i ++){
+            if(row == computerHits.get(i).getDown() && col == computerHits.get(i).getAcross())
+                return "You have already fired there!";
+        }
         Coordinate coor = new Coordinate(row,col);
         if(computer_aircraftCarrier.covers(coor)){
             computerHits.add(coor);
@@ -104,6 +143,7 @@ public class BattleshipModel {
         } else {
             computerMisses.add(coor);
         }
+        return null;
     }
 
     public void shootAtPlayer() {
