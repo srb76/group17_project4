@@ -123,21 +123,7 @@ function cellPlaceClick(id){
     document.getElementById('selectedCol').innerHTML = col;
 
 }
-function cellFireClick(className){
-    if(selectedFireClass != null)
-        document.getElementsByClassName(selectedFireClass)[1].style.border = "1px solid black";
-    selectedFireClass = className;
-    document.getElementsByClassName(className)[1].style.border = "1px solid red";
 
-    var string = className.replace(/{|}/g, '');
-
-    var nums = string.split("_");
-    var row = nums[0];
-    var col = nums[1];
-    document.getElementById('fireRowLabel').innerHTML = row;
-    document.getElementById('fireColLabel').innerHTML = col;
-
-}
 
 
 function displayShip(ship){
