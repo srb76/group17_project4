@@ -51,4 +51,8 @@ public class Ship {
         return false;
     }
 
+    public int getLength(){
+        return length;
+    }
+
 }

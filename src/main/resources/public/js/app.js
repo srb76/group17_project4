@@ -30,7 +30,7 @@ function placeShip() {
    });
 
    request.fail(function( jqXHR, textStatus ) {
-     alert( "Request failed: " + textStatus );
+     alert( "Illegal Move: " + jqXHR.responseText);
    });
 }
 
@@ -54,7 +54,7 @@ function fire(){
    });
 
    request.fail(function( jqXHR, textStatus ) {
-     alert( "Request failed: " + textStatus );
+     alert( "Ilegal move: " + jqXHR.responseText);
    });
 
 }
