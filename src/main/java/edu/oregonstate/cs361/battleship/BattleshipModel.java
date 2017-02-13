@@ -57,6 +57,7 @@ public class BattleshipModel {
     }
 
     public BattleshipModel placeShip(String shipName, String row, String col, String orientation, BattleshipModel currModel) {
+
         int rowint = Integer.parseInt(row);
         int colInt = Integer.parseInt(col);
         if(orientation.equals("horizontal")){

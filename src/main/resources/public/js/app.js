@@ -1,4 +1,6 @@
 var gameModel;
+var selectedID = null;
+var selectedFireClass = null;
 
 $( document ).ready(function() {
   // Handler for .ready() called.
@@ -9,14 +11,23 @@ $( document ).ready(function() {
 });
 
 function placeShip() {
-   console.log($( "#shipSelec" ).val());
-   console.log($( "#rowSelec" ).val());
-   console.log($( "#colSelec" ).val());
-   console.log($( "#orientationSelec" ).val());
+
+   var rowid = document.getElementById('selectedRow').innerHTML;
+   var colid = document.getElementById('selectedCol').innerHTML;
+
+   var myID = rowid + "_" + colid;
+   document.getElementById(myID).style.border = "1px solid black";
+   selectedID = null;
+
+
+   var selected_ship = document.querySelector('input[name="ship"]:checked').value;
+   var selected_orientation = document.querySelector('input[name="orientation"]:checked').value;
+   var selected_row = document.getElementById('selectedRow').innerHTML;
+   var selected_col = document.getElementById('selectedCol').innerHTML;
 
    //var menuId = $( "ul.nav" ).first().attr( "id" );
    var request = $.ajax({
-     url: "/placeShip/"+$( "#shipSelec" ).val()+"/"+$( "#rowSelec" ).val()+"/"+$( "#colSelec" ).val()+"/"+$( "#orientationSelec" ).val(),
+     url: "/placeShip/"+selected_ship+"/"+selected_row+"/"+selected_col+"/"+selected_orientation,
      method: "post",
      data: JSON.stringify(gameModel),
      contentType: "application/json; charset=utf-8",
@@ -36,17 +47,20 @@ function placeShip() {
 
 
 function fire(){
- console.log($( "#rowFire" ).val());
- console.log($( "#colFire" ).val());
+
+ var selected_row = document.getElementById('fireRowLabel').innerHTML;
+ var selected_col = document.getElementById('fireColLabel').innerHTML;
+
+ document.getElementsByClassName(selectedFireClass)[1].style.border = "1px solid black";
+
 //var menuId = $( "ul.nav" ).first().attr( "id" );
    var request = $.ajax({
-     url: "/fire/"+$( "#rowFire" ).val()+"/"+$( "#colFire" ).val(),
+     url: "/fire/"+selected_row+"/"+selected_col,
      method: "post",
      data: JSON.stringify(gameModel),
      contentType: "application/json; charset=utf-8",
      dataType: "json"
    });
-
    request.done(function( currModel ) {
      displayGameState(currModel);
      gameModel = currModel;
@@ -57,6 +71,7 @@ function fire(){
      alert( "Request failed: " + textStatus );
    });
 
+    selectedFireClass = null;
 }
 
 function log(logContents){
@@ -92,13 +107,45 @@ for (var i = 0; i < gameModel.playerHits.length; i++) {
 }
 
 
+function cellPlaceClick(id){
+    if(selectedID != null)
+        document.getElementById(selectedID).style.border = "1px solid black";
+
+
+    selectedID = id;
+    document.getElementById(selectedID).style.border = "1px solid red";
+
+
+    var nums = selectedID.split("_");
+    var row = nums[0];
+    var col = nums[1];
+    document.getElementById('selectedRow').innerHTML = row;
+    document.getElementById('selectedCol').innerHTML = col;
+
+}
+function cellFireClick(className){
+    if(selectedFireClass != null)
+        document.getElementsByClassName(selectedFireClass)[1].style.border = "1px solid black";
+    selectedFireClass = className;
+    document.getElementsByClassName(className)[1].style.border = "1px solid red";
+
+    var string = className.replace(/{|}/g, '');
+
+    var nums = string.split("_");
+    var row = nums[0];
+    var col = nums[1];
+    document.getElementById('fireRowLabel').innerHTML = row;
+    document.getElementById('fireColLabel').innerHTML = col;
+
+}
+
 
 function displayShip(ship){
  startCoordAcross = ship.start.Across;
  startCoordDown = ship.start.Down;
  endCoordAcross = ship.end.Across;
  endCoordDown = ship.end.Down;
-// console.log(startCoordAcross);
+
  if(startCoordAcross > 0){
     if(startCoordAcross == endCoordAcross){
         for (i = startCoordDown; i <= endCoordDown; i++) {
