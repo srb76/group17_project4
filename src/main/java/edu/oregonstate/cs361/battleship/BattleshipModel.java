@@ -119,14 +119,15 @@ public class BattleshipModel {
     }
 
     public String shootAtComputer(int row, int col) {
+        //Note: Reversed order for checking computerHits and computerMisses
         if(row > 10 || col > 10)
             return "That Shot is off the board!";
         for(int i = 0; i < computerMisses.size(); i++){
-            if(row == computerMisses.get(i).getDown() && col == computerMisses.get(i).getAcross())
+            if(row == computerMisses.get(i).getAcross() && col == computerMisses.get(i).getDown())
                 return "You have already fired there!";
         }
         for(int i = 0; i < computerHits.size(); i ++){
-            if(row == computerHits.get(i).getDown() && col == computerHits.get(i).getAcross())
+            if(row == computerHits.get(i).getAcross() && col == computerHits.get(i).getDown())
                 return "You have already fired there!";
         }
         Coordinate coor = new Coordinate(row,col);

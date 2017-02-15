@@ -51,7 +51,7 @@ function fire(){
  var selected_row = document.getElementById('fireRowLabel').innerHTML;
  var selected_col = document.getElementById('fireColLabel').innerHTML;
 
- document.getElementsByClassName(selectedFireClass)[1].style.border = "1px solid black";
+ //document.getElementsByClassName(selectedFireClass)[1].style.border = "1px solid black";
 
 //var menuId = $( "ul.nav" ).first().attr( "id" );
    var request = $.ajax({
@@ -71,7 +71,7 @@ function fire(){
      alert( "Ilegal move: " + jqXHR.responseText);
    });
 
-    selectedFireClass = null;
+    //selectedFireClass = null;
 }
 
 function log(logContents){
@@ -88,11 +88,12 @@ displayShip(gameModel.cruiser);
 displayShip(gameModel.destroyer);
 displayShip(gameModel.submarine);
 
+//Now checks element ending with "_ai"
 for (var i = 0; i < gameModel.computerMisses.length; i++) {
-   $( '#TheirBoard #' + gameModel.computerMisses[i].Across + '_' + gameModel.computerMisses[i].Down ).css("background-color", "green");
+   $( '#TheirBoard #' + gameModel.computerMisses[i].Across + '_' + gameModel.computerMisses[i].Down + "_ai" ).css("background-color", "green");
 }
 for (var i = 0; i < gameModel.computerHits.length; i++) {
-   $( '#TheirBoard #' + gameModel.computerHits[i].Across + '_' + gameModel.computerHits[i].Down ).css("background-color", "red");
+   $( '#TheirBoard #' + gameModel.computerHits[i].Across + '_' + gameModel.computerHits[i].Down + "_ai" ).css("background-color", "red");
 }
 
 for (var i = 0; i < gameModel.playerMisses.length; i++) {
@@ -122,6 +123,24 @@ function cellPlaceClick(id){
     document.getElementById('selectedRow').innerHTML = row;
     document.getElementById('selectedCol').innerHTML = col;
 
+}
+
+function cellFireClick(id){
+    //Duplicate of cellPlaceClick but modifies fireRowLabel and fireColLabel
+    //Could be merged with cellPlaceClick using another function parameter
+
+    if(selectedID != null)
+        document.getElementById(selectedID).style.border = "1px solid black";
+
+    selectedID = id;
+        document.getElementById(selectedID).style.border = "2px solid red";
+
+
+        var nums = selectedID.split("_");
+        var row = nums[0];
+        var col = nums[1];
+        document.getElementById('fireRowLabel').innerHTML = row;
+        document.getElementById('fireColLabel').innerHTML = col;
 }
 
 
