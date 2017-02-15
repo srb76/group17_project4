@@ -78,29 +78,28 @@ public class BattleshipModel {
             endColInt = colInt;
             if(endRowInt > 10)
                 return "Ship Placement out of bounds";
-            Coordinate start = new Coordinate(rowInt, colInt);
-            Coordinate end = new Coordinate(endRowInt, endColInt);
+            Coordinate start = new Coordinate(colInt, rowInt);
+            Coordinate end = new Coordinate(endColInt, endRowInt);
             testShip.setLocation(start, end);
             for(int i = 0; i > playerShipPoints.size(); i++){
                 if(testShip.covers(playerShipPoints.get(i)));
                     return "Placement overlaps another ship";
             }
-            System.out.println("Size: " + size);
             for(int i = 0; i < size; i++){
-                Coordinate toAdd = new Coordinate(rowInt + i, colInt);
+                Coordinate toAdd = new Coordinate(colInt, rowInt + i);
                 toAdd.display();
                 playerShipPoints.add(toAdd);
             }
             getShip(shipName).setLocation(start, end);
         } else { //horizantal
-            if((colInt + size -1) > 10)
+            if((rowInt + size -1) > 10)
                 return "Ship Placement out of bounds";
             endRowInt = rowInt;
-            endColInt = colInt + size - 1;
+            endColInt = colInt + size -1;
             if(endColInt > 10 )
                 return "Ship placement out of bounds";
-            Coordinate start = new Coordinate(rowInt, colInt);
-            Coordinate end = new Coordinate(endRowInt, endColInt);
+            Coordinate start = new Coordinate(colInt, rowInt);
+            Coordinate end = new Coordinate(endColInt, endRowInt);
             testShip.setLocation(start, end);
             for(int i = 0; i < playerShipPoints.size(); i++){
                 if(testShip.covers(playerShipPoints.get(i)))
@@ -108,7 +107,7 @@ public class BattleshipModel {
             }
 
             for(int i = 0; i < size; i++){
-                Coordinate toAdd = new Coordinate(rowInt, colInt + i);
+                Coordinate toAdd = new Coordinate( colInt + i, rowInt);
                 toAdd.display();
                 playerShipPoints.add(toAdd);
             }

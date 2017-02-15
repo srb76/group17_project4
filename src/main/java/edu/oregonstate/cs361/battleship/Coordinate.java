@@ -29,6 +29,6 @@ public class Coordinate {
     }
 
     public void display(){
-        System.out.println("Across: " + Across + " Down: " + Down);
+        System.out.println("Col: " + Across + " Row: " + Down);
     }
 }
