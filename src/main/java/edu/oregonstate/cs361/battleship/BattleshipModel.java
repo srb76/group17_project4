@@ -63,57 +63,54 @@ public class BattleshipModel {
 
 
 
-    public String placeShip(String shipName, String row, String col, String orientation) {
-        int rowInt = Integer.parseInt(row);
-        int colInt = Integer.parseInt(col);
-        if(rowInt > 10 || colInt > 10)
+    public String placeShip(String shipName, String AcrossS, String DownS, String orientation) {
+        int Across = Integer.parseInt(AcrossS);
+        int Down = Integer.parseInt(DownS);
+        if(Down > 10 || Across > 10)
             return "Ship Placement out of bounds";
         int size;
-        int endRowInt;
-        int endColInt;
+        int endDown;
+        int endAcross;
         size = getShip(shipName).getLength();
         Ship testShip = new Ship("test", size);
         if(orientation.equals("vertical")){
-            endRowInt = rowInt + size - 1;
-            endColInt = colInt;
-            if(endRowInt > 10)
+            endDown = Down;
+            endAcross = Across + size - 1;
+            if(endDown > 10)
                 return "Ship Placement out of bounds";
-            Coordinate start = new Coordinate(rowInt, colInt);
-            Coordinate end = new Coordinate(endRowInt, endColInt);
-            testShip.setLocation(start, end);
-            for(int i = 0; i > playerShipPoints.size(); i++){
-                if(testShip.covers(playerShipPoints.get(i)));
-                    return "Placement overlaps another ship";
-            }
-            System.out.println("Size: " + size);
-            for(int i = 0; i < size; i++){
-                Coordinate toAdd = new Coordinate(rowInt + i, colInt);
-                toAdd.display();
-                playerShipPoints.add(toAdd);
-            }
-            getShip(shipName).setLocation(start, end);
-        } else { //horizantal
-            if((colInt + size -1) > 10)
-                return "Ship Placement out of bounds";
-            endRowInt = rowInt;
-            endColInt = colInt + size - 1;
-            if(endColInt > 10 )
-                return "Ship placement out of bounds";
-            Coordinate start = new Coordinate(rowInt, colInt);
-            Coordinate end = new Coordinate(endRowInt, endColInt);
+            Coordinate start = new Coordinate(Across, Down);
+            Coordinate end = new Coordinate(endAcross, endDown);
             testShip.setLocation(start, end);
             for(int i = 0; i < playerShipPoints.size(); i++){
                 if(testShip.covers(playerShipPoints.get(i)))
                     return "Placement overlaps another ship";
             }
-
             for(int i = 0; i < size; i++){
-                Coordinate toAdd = new Coordinate(rowInt, colInt + i);
-                toAdd.display();
+                Coordinate toAdd = new Coordinate(Across + i, Down);
+                playerShipPoints.add(toAdd);
+            }
+            getShip(shipName).setLocation(start, end);
+        } else { //horizantal
+            if((Down + size -1) > 10)
+                return "Ship Placement out of bounds";
+            endDown = Down + size -1;
+            endAcross = Across;
+            if(endAcross > 10 )
+                return "Ship placement out of bounds";
+            Coordinate start = new Coordinate(Across, Down);
+            Coordinate end = new Coordinate(endAcross, endDown);
+            testShip.setLocation(start, end);
+            for(int i = 0; i < playerShipPoints.size(); i++){
+                if(testShip.covers(playerShipPoints.get(i)))
+                    return "Placement overlaps another ship";
+            }
+            for(int i = 0; i < size; i++){
+                Coordinate toAdd = new Coordinate( Across, Down + i);
                 playerShipPoints.add(toAdd);
             }
             getShip(shipName).setLocation(start, end);
         }
+        System.out.println("Points in PlayerShipPoints: ");
 
         return null;
     }

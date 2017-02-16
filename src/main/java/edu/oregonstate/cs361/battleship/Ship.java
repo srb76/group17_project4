@@ -29,23 +29,22 @@ public class Ship {
     public boolean covers(Coordinate test) {
         //horizontal
         if(start.getAcross() == end.getAcross()){
-            if(test.getAcross() == start.getAcross()){
-                if((test.getDown() >= start.getDown()) &&
-                (test.getDown() <= end.getDown()))
-                return true;
-            } else {
-                return false;
+            for(int i = 0; i < this.length; i++){
+                Coordinate loop = new Coordinate(start.getAcross(), start.getDown() + i);
+                if(test.equals(loop))
+                    return true;
             }
         }
         //vertical
         else{
-            if(test.getDown() == start.getDown()){
-                if((test.getAcross() >= start.getAcross()) &&
-                        (test.getAcross() <= end.getAcross()))
+            for(int i = 0; i < this.length; i++){
+                Coordinate loop = new Coordinate(start.getAcross() + i, start.getDown());
+                if(test.equals(loop)){
                     return true;
-            } else {
-                return false;
+                }
             }
+            return false;
+
 
         }
         return false;
