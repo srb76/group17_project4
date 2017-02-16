@@ -7,9 +7,9 @@ public class Coordinate {
     private int Across;
     private int Down;
 
-    public Coordinate(int letter, int number) {
-        Across = letter;
-        Down = number;
+    public Coordinate(int Across, int Down) {
+        this.Across = Across;
+        this.Down = Down;
     }
 
     public int getDown() {
@@ -30,5 +30,11 @@ public class Coordinate {
 
     public void display(){
         System.out.println("Across: " + Across + " Down: " + Down);
+    }
+
+    public boolean equals(Coordinate toTest){
+        if((this.Across == toTest.Across) && (this.Down == toTest.Down))
+            return true;
+        return false;
     }
 }
