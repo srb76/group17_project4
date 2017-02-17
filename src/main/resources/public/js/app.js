@@ -64,9 +64,15 @@ function fire(){
    request.done(function( currModel ) {
      displayGameState(currModel);
      gameModel = currModel;
-
+     parseGameModel(gameModel);
    });
+    function parseGameModel(gameModel){
+    document.getElementById("playerScore").innerHTML = gameModel.computerHits.length;
+    document.getElementById("computerScore").innerHTML = gameModel.playerHits.length;
+console.log(JSON.stringify(gameModel));
 
+
+    }
    request.fail(function( jqXHR, textStatus ) {
      alert( "Ilegal move: " + jqXHR.responseText);
    });
