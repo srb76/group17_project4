@@ -25,7 +25,7 @@ public class BattleshipModel {
     private ArrayList<Coordinate> playerMisses;
     private ArrayList<Coordinate> computerHits;
     private ArrayList<Coordinate> computerMisses;
-
+    //private ArrayList<Coordinate> computerScore;
     private ArrayList<Coordinate> playerShipPoints;
 
 
@@ -35,7 +35,7 @@ public class BattleshipModel {
         playerMisses= new ArrayList<>();
         computerHits = new ArrayList<>();
         computerMisses= new ArrayList<>();
-
+        //computerScore = new ArrayList<>();
         playerShipPoints = new ArrayList<>();
     }
 
@@ -161,6 +161,7 @@ public class BattleshipModel {
 
         if(aircraftCarrier.covers(coor)){
             playerHits.add(coor);
+            //computerScore.add(5);
         }else if (battleship.covers(coor)){
             playerHits.add(coor);
         }else if (cruiser.covers(coor)){
