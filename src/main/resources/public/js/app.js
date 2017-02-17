@@ -6,7 +6,7 @@ $( document ).ready(function() {
   // Handler for .ready() called.
   $.getJSON("model", function( json ) {
   gameModel = json;
-    console.log( "JSON Data: " + json );
+    //console.log( "JSON Data: " + json );
    });
 });
 
@@ -69,7 +69,6 @@ function fire(){
     function parseGameModel(gameModel){
     document.getElementById("playerScore").innerHTML = gameModel.computerHits.length;
     document.getElementById("computerScore").innerHTML = gameModel.playerHits.length;
-console.log(JSON.stringify(gameModel));
 
 
     }
