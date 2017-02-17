@@ -110,7 +110,6 @@ public class BattleshipModel {
             }
             getShip(shipName).setLocation(start, end);
         }
-        System.out.println("Points in PlayerShipPoints: ");
 
         return null;
     }
