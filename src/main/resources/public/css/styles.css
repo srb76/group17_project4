@@ -10,6 +10,12 @@ background-color: black;
     font-family: Impact, Charcoal, sans-serif;
 
 }
+
+#scanResult{
+    color: white;
+    font-size: 16px;
+}
+
 .scores{
 border:12px;
 
@@ -49,7 +55,7 @@ margin: 0px;
     border: none;
 }
 
-.myRadio{
+.shipRadio{
 height: 20px;
 }
 
