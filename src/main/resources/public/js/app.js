@@ -6,6 +6,8 @@ $( document ).ready(function() {
   // Handler for .ready() called.
   $.getJSON("model", function( json ) {
   gameModel = json;
+  disableButton('scanButton');
+  disableButton('fireButton');
     //console.log( "JSON Data: " + json );
    });
 });
@@ -42,10 +44,7 @@ function placeShip() {
      document.getElementById(radioID).parentNode.style.color = "grey";
      var id = getNextButton(radioID);
      if(id == "NONE"){
-        document.getElementById('placeShipButton').style.backgroundColor = "grey";
-        document.getElementById('placeShipButton').style.border = "grey";
-        document.getElementById('placeShipButton').style.color = "#D3D3D3";
-        document.getElementById('placeShipButton').disabled = true;
+        disableButton('placeShipButton');
         document.getElementById('horizontalRadio').disabled = true;
         document.getElementById('verticalRadio').disabled = true;
         document.getElementById('horizontalRadio').checked = false;
@@ -99,7 +98,6 @@ var request = $.ajax({
             document.getElementById('scanResult').innerHTML = "Scan Found a Ship!";
         else
             document.getElementById('scanResult').innerHTML = "Scan Found Nothing.";
-
      displayGameState(currModel);
      gameModel = currModel;
 
@@ -149,28 +147,30 @@ function log(logContents){
 }
 
 function disableButton(id){
-document.getElementById(id).enabled = false;
+document.getElementById(id).disabled = true;
+$(id).css("cursor", "default !important");
 document.getElementById(id).style.backgroundColor = "grey";
 document.getElementById(id).style.border = "2px solid grey";
-document.getElementById(id).style.color = "black";
+document.getElementById(id).style.color = "#D3D3D3";
 document.getElementById(id).style.textShadow = "0px 1px 0px black";
 
 }
 
 function enableButton(id){
+document.getElementById(id).disabled = false;
+$(id).css("cursor", "pointer !important");
 if(id == 'scanButton'){
-document.getElementById(id).enabled = true;
-document.getElementById(id).style.backgroundColor = "#DC143C";
-document.getElementById(id).style.border = "2px solid #DC143C";
-document.getElementById(id).style.color = "black";
-document.getElementById(id).style.textShadow = "0px 1px 0px #DC143C";
-}
-else{
-document.getElementById(id).enabled = true;
 document.getElementById(id).style.backgroundColor = "#008000";
 document.getElementById(id).style.border = "2px solid #008000";
 document.getElementById(id).style.color = "black";
 document.getElementById(id).style.textShadow = "0px 1px 0px #008000";
+
+}
+else{
+document.getElementById(id).style.backgroundColor = "#DC143C";
+document.getElementById(id).style.border = "2px solid #DC143C";
+document.getElementById(id).style.color = "black";
+document.getElementById(id).style.textShadow = "0px 1px 0px #DC143C";
 
 }
 }
@@ -189,13 +189,13 @@ displayShip(gameModel.cruiser);
 displayShip(gameModel.destroyer);
 displayShip(gameModel.submarine);
 
-//displayEnemyShip(gameModel.computer_aircraftCarrier);
-//displayEnemyShip(gameModel.computer_battleship);
-//displayEnemyShip(gameModel.computer_cruiser);
-//displayEnemyShip(gameModel.computer_destroyer);
-//displayEnemyShip(gameModel.computer_submarine);
-
-
+/*
+displayEnemyShip(gameModel.computer_aircraftCarrier);
+displayEnemyShip(gameModel.computer_battleship);
+displayEnemyShip(gameModel.computer_cruiser);
+displayEnemyShip(gameModel.computer_destroyer);
+displayEnemyShip(gameModel.computer_submarine);
+*/
 
 //Now checks element ending with "_ai"
 for (var i = 0; i < gameModel.computerMisses.length; i++) {
@@ -235,6 +235,7 @@ function cellPlaceClick(id){
 }
 
 function cellFireClick(id){
+
     //Duplicate of cellPlaceClick but modifies fireRowLabel and fireColLabel
     //Could be merged with cellPlaceClick using another function parameter
     enableButton('scanButton');
