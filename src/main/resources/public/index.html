@@ -289,24 +289,24 @@
                             <td id="radioLeft" class="radioListCell" rowspan="2">
                                 <!-- <label style="font-weight:bold; border-bottom: 1px solid black;">Choose Ship:</label> -->
                                 <form action="" name="shipSelec" id="shipSelec">
-                                    <label><input class="myRadio" type="radio" name="ship" checked="checked" value="aircraftCarrier" >Aircraft Carrier</label><br>
-                                    <label><input class="myRadio" type="radio" name="ship" value="battleship">Battleship</label><br>
-                                    <label><input class="myRadio" type="radio" name="ship" value="cruiser">Cruiser</label><br>
-                                    <label><input class="myRadio" type="radio" name="ship" value="destroyer">Destroyer</label><br>
-                                    <label><input class="myRadio" type="radio" name="ship" value="submarine">Submarine</label>
+                                    <label><input id="aircraftCarrierRadio" class="shipRadio" type="radio" name="ship" checked="checked" value="aircraftCarrier" >Aircraft Carrier</label><br>
+                                    <label><input id="battleshipRadio" class="shipRadio" type="radio" name="ship" value="battleship">Battleship</label><br>
+                                    <label><input id="cruiserRadio" class="shipRadio" type="radio" name="ship" value="cruiser">Cruiser</label><br>
+                                    <label><input id="destroyerRadio" class="shipRadio" type="radio" name="ship" value="destroyer">Destroyer</label><br>
+                                    <label><input id="submarineRadio" class="shipRadio" type="radio" name="ship" value="submarine">Submarine</label>
                                 </form>
                             </td>
                             <td id="radioRight" class="radioListCell" height="50px">
                                 <!-- <label style="font-weight:bold; border-bottom: 1px solid black;">Orientation:</label> -->
                                 <form action="" name="orientationSelect" id="orientationSelect">
-                                    <label><input class="myRadio" type="radio" name="orientation" checked="checked" value="horizontal">horizontal</label><br>
-                                    <label><input class="myRadio" type="radio" name="orientation" value="vertical">vertical</label>
+                                    <label><input id="horizontalRadio" class="myRadio" type="radio" name="orientation" checked="checked" value="horizontal">horizontal</label><br>
+                                    <label><input id="verticalRadio" class="myRadio" type="radio" name="orientation" value="vertical">vertical</label>
                                 </form>
                             </td>
                         </tr>
                         <tr>
                             <td class="buttonCell">
-                                <button class="myButton" type="button" onclick="placeShip()">Place</button>
+                                <button id="placeShipButton" class="myButton" type="button" onclick="placeShip()">Place</button>
                             </td>
                         </tr>
                     </table>
@@ -322,13 +322,18 @@
                 <table class="buttonTable">
                     <tr>
                         <td>
-                            <button class="fireButton" type="button" onclick="fire()">Fire</button>
+                            <button id="fireButton" class="fireButton" type="button" onclick="fire()">Fire</button>
                         </td>
-                        <!--
+
                         <td>
-                           <button class="scanButton" type="button" onclick="">Scan</button>
+                           <button id="scanButton" class="scanButton" type="button" onclick="scan()">Scan</button>
                         </td>
-                        -->
+
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <label id="scanResult"></label>
+                        </td>
                     </tr>
                 </table>
             </td>

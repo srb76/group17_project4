@@ -30,6 +30,7 @@ public class Main {
         post("/fire/:row/:col", (req, res) -> fireAt(req, res));
         //This will listen to POST requests and expects to receive a game model, as well as location to place the ship
         post("/placeShip/:id/:row/:col/:orientation", (req, res) -> placeShip(req, res));
+        post("/scan/:row/:col", (req, res) -> scan(req));
     }
 
     //This function returns a new model
@@ -76,6 +77,18 @@ public class Main {
             return result;
         } else //(result == null)
             currModel.shootAtPlayer();
+        Gson gson = new Gson();
+        return gson.toJson(currModel);
+    }
+
+    private static String scan(Request req){
+        BattleshipModel currModel = getModelFromReq(req);
+        String row = req.params("row");
+        String col = req.params("col");
+        int rowInt = Integer.parseInt(row);
+        int colInt = Integer.parseInt(col);
+        currModel.scan(rowInt,colInt);
+        currModel.shootAtPlayer();
         Gson gson = new Gson();
         return gson.toJson(currModel);
     }

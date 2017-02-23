@@ -8,7 +8,7 @@ public class Ship {
     private int length;
     private Coordinate start;
     private Coordinate end;
-
+    private Coordinate[] myPoints;
     public Ship(String n, int l,Coordinate s, Coordinate e) {
         name = n;
         length = l;
@@ -24,6 +24,13 @@ public class Ship {
         start = s;
         end = e;
 
+    }
+    public void setPoints(Coordinate[] points){
+        myPoints = points;
+    }
+
+    public Coordinate[] getPoints(){
+        return myPoints;
     }
 
     public boolean covers(Coordinate test) {
