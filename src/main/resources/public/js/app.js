@@ -1,7 +1,7 @@
 var gameModel;
 var selectedID = null;
 var selectedFireClass = null;
-
+var ships_placed = false;
 $( document ).ready(function() {
   // Handler for .ready() called.
   $.getJSON("model", function( json ) {
@@ -52,6 +52,7 @@ function placeShip() {
         document.getElementById('verticalRadio').checked = false;
         document.getElementById('verticalRadio').parentNode.style.color = "grey";
         document.getElementById('horizontalRadio').parentNode.style.color = "grey";
+        ships_placed = true;
 
         document.getElementById(radioID).checked = false;
      }
@@ -263,6 +264,7 @@ function cellFireClick(id){
         var col = nums[1];
         document.getElementById('fireRowLabel').innerHTML = row;
         document.getElementById('fireColLabel').innerHTML = col;
+
 }
 
 
