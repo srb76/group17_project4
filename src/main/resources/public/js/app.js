@@ -1,19 +1,20 @@
 var gameModel;
 var selectedID = null;
 var selectedFireClass = null;
-
+var ships_placed = false;
 $( document ).ready(function() {
   // Handler for .ready() called.
   $.getJSON("model", function( json ) {
   gameModel = json;
   disableButton('scanButton');
   disableButton('fireButton');
+  disableButton('placeShipButton');
     //console.log( "JSON Data: " + json );
    });
 });
 
 function placeShip() {
-
+   disableButton('placeShipButton');
    var rowid = document.getElementById('selectedRow').innerHTML;
    var colid = document.getElementById('selectedCol').innerHTML;
 
@@ -51,6 +52,7 @@ function placeShip() {
         document.getElementById('verticalRadio').checked = false;
         document.getElementById('verticalRadio').parentNode.style.color = "grey";
         document.getElementById('horizontalRadio').parentNode.style.color = "grey";
+        ships_placed = true;
 
         document.getElementById(radioID).checked = false;
      }
@@ -166,6 +168,12 @@ document.getElementById(id).style.color = "black";
 document.getElementById(id).style.textShadow = "0px 1px 0px #008000";
 
 }
+else if(id == 'placeShipButton'){
+document.getElementById(id).style.backgroundColor = "#fae500";
+document.getElementById(id).style.border = "2px solid #fae500";
+document.getElementById(id).style.color = "#ffffff";
+document.getElementById(id).style.textShadow = "0px 1px 0px #fae500";
+}
 else{
 document.getElementById(id).style.backgroundColor = "#DC143C";
 document.getElementById(id).style.border = "2px solid #DC143C";
@@ -218,6 +226,8 @@ for (var i = 0; i < gameModel.playerHits.length; i++) {
 
 
 function cellPlaceClick(id){
+    enableButton('placeShipButton');
+
     if(selectedID != null)
         document.getElementById(selectedID).style.border = "1px solid black";
 
@@ -254,6 +264,7 @@ function cellFireClick(id){
         var col = nums[1];
         document.getElementById('fireRowLabel').innerHTML = row;
         document.getElementById('fireColLabel').innerHTML = col;
+
 }
 
 

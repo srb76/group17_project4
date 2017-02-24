@@ -96,19 +96,15 @@ padding-right: 0px;
 }
 
 .myButton {
-	background-color:#fae500;
 	-moz-border-radius:12px;
 	-webkit-border-radius:12px;
 	border-radius:12px;
-	border:2px solid #fae500;
 	display:inline-block;
 	cursor:pointer;
-	color:#ffffff;
 	font-family:Arial;
 	font-size:22px;
 	padding:10px 20px;
 	text-decoration:none;
-	text-shadow:0px 1px 0px #fae500;
 	width: 100%;
 }
 .myButton:hover {

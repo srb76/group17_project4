@@ -288,7 +288,7 @@
                         <tr>
                             <td id="radioLeft" class="radioListCell" rowspan="2">
                                 <!-- <label style="font-weight:bold; border-bottom: 1px solid black;">Choose Ship:</label> -->
-                                <form action="" name="shipSelec" id="shipSelec">
+                                <form action="" name="shipSelec" id="shipSelec" disabled>
                                     <label><input id="aircraftCarrierRadio" class="shipRadio" type="radio" name="ship" checked="checked" value="aircraftCarrier" >Aircraft Carrier</label><br>
                                     <label><input id="battleshipRadio" class="shipRadio" type="radio" name="ship" value="battleship">Battleship</label><br>
                                     <label><input id="cruiserRadio" class="shipRadio" type="radio" name="ship" value="cruiser">Cruiser</label><br>
@@ -306,7 +306,7 @@
                         </tr>
                         <tr>
                             <td class="buttonCell">
-                                <button id="placeShipButton" class="myButton" type="button" onclick="placeShip()">Place</button>
+                                <button id="placeShipButton" class="myButton" type="button" disabled onclick="placeShip()">Place</button>
                             </td>
                         </tr>
                     </table>
