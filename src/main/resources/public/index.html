@@ -289,18 +289,18 @@
                             <td id="radioLeft" class="radioListCell" rowspan="2">
                                 <!-- <label style="font-weight:bold; border-bottom: 1px solid black;">Choose Ship:</label> -->
                                 <form action="" name="shipSelec" id="shipSelec" disabled>
-                                    <label><input id="aircraftCarrierRadio" class="shipRadio" type="radio" name="ship" checked="checked" value="aircraftCarrier" >Aircraft Carrier</label><br>
-                                    <label><input id="battleshipRadio" class="shipRadio" type="radio" name="ship" value="battleship">Battleship</label><br>
-                                    <label><input id="cruiserRadio" class="shipRadio" type="radio" name="ship" value="cruiser">Cruiser</label><br>
-                                    <label><input id="destroyerRadio" class="shipRadio" type="radio" name="ship" value="destroyer">Destroyer</label><br>
-                                    <label><input id="submarineRadio" class="shipRadio" type="radio" name="ship" value="submarine">Submarine</label>
+                                    <label><input id="aircraftCarrierRadio" class="shipRadio" type="radio" name="ship" checked="checked" value="aircraftCarrier" onclick="cellPlaceClick(null)">Aircraft Carrier</label><br>
+                                    <label><input id="battleshipRadio" class="shipRadio" type="radio" name="ship" value="battleship" onclick="cellPlaceClick(null)">Battleship</label><br>
+                                    <label><input id="cruiserRadio" class="shipRadio" type="radio" name="ship" value="cruiser" onclick="cellPlaceClick(null)">Cruiser</label><br>
+                                    <label><input id="destroyerRadio" class="shipRadio" type="radio" name="ship" value="destroyer" onclick="cellPlaceClick(null)">Destroyer</label><br>
+                                    <label><input id="submarineRadio" class="shipRadio" type="radio" name="ship" value="submarine" onclick="cellPlaceClick(null)">Submarine</label>
                                 </form>
                             </td>
                             <td id="radioRight" class="radioListCell" height="50px">
                                 <!-- <label style="font-weight:bold; border-bottom: 1px solid black;">Orientation:</label> -->
                                 <form action="" name="orientationSelect" id="orientationSelect">
-                                    <label><input id="horizontalRadio" class="myRadio" type="radio" name="orientation" checked="checked" value="horizontal">horizontal</label><br>
-                                    <label><input id="verticalRadio" class="myRadio" type="radio" name="orientation" value="vertical">vertical</label>
+                                    <label><input id="horizontalRadio" class="myRadio" type="radio" name="orientation" checked="checked" value="horizontal" onclick="cellPlaceClick(null)">horizontal</label><br>
+                                    <label><input id="verticalRadio" class="myRadio" type="radio" name="orientation" value="vertical" onclick="cellPlaceClick(null)">vertical</label>
                                 </form>
                             </td>
                         </tr>

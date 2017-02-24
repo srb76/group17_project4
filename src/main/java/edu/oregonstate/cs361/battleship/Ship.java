@@ -30,6 +30,14 @@ public class Ship {
         myPoints = points;
     }
 
+    public boolean containsPoint(Coordinate point){
+        for(int i = 0; i < myPoints.length; i++) {
+            if (myPoints[i].equals(point))
+                return true;
+        }
+        return false;
+    }
+
     public Coordinate[] getPoints(){
         return myPoints;
     }

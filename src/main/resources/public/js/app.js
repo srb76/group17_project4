@@ -14,6 +14,13 @@ $( document ).ready(function() {
 });
 
 function placeShip() {
+    for(var i=1; i < 11; i++){
+                for(var j=1; j < 11; j++){
+                   var changeID = i +"_"+j;
+                   document.getElementById(changeID).style.border = "1px solid black";
+
+                }
+    }
    disableButton('placeShipButton');
    var rowid = document.getElementById('selectedRow').innerHTML;
    var colid = document.getElementById('selectedCol').innerHTML;
@@ -26,7 +33,7 @@ function placeShip() {
     var selected_ship = $radio.val();
     var radioID = $radio.attr('id');
 
-   console.log(radioID);
+
    var selected_orientation = document.querySelector('input[name="orientation"]:checked').value;
    var selected_row = document.getElementById('selectedRow').innerHTML;
    var selected_col = document.getElementById('selectedCol').innerHTML;
@@ -54,6 +61,7 @@ function placeShip() {
         document.getElementById('horizontalRadio').parentNode.style.color = "grey";
         ships_placed = true;
 
+
         document.getElementById(radioID).checked = false;
      }
      else{
@@ -72,8 +80,6 @@ function placeShip() {
 
 function getNextButton(id){
     var myRadioButtons = document.getElementsByClassName('shipRadio');
-    console.log(myRadioButtons);
-
     for(i = 0; i < 5; i++){
         if(myRadioButtons[i].disabled == false){
             return myRadioButtons[i].id;
@@ -85,6 +91,8 @@ function getNextButton(id){
 
 
 function scan(){
+if(selectedID != null)
+        document.getElementById(selectedID).style.border = "1px solid black";
 var selected_row = parseInt(document.getElementById('fireRowLabel').innerHTML);
 var selected_col = parseInt(document.getElementById('fireColLabel').innerHTML);
 
@@ -112,7 +120,8 @@ var request = $.ajax({
 
 
 function fire(){
-
+if(selectedID != null)
+        document.getElementById(selectedID).style.border = "1px solid black";
  var selected_row = document.getElementById('fireRowLabel').innerHTML;
  var selected_col = document.getElementById('fireColLabel').innerHTML;
 
@@ -224,34 +233,74 @@ for (var i = 0; i < gameModel.playerHits.length; i++) {
 
 }
 
-
 function cellPlaceClick(id){
-    enableButton('placeShipButton');
+    if(ships_placed == false){
+        enableButton('placeShipButton');
+        if(selectedID != null){
+                for(var i=1; i < 11; i++){
+                    for(var j=1; j < 11; j++){
+                       var changeID = i +"_"+j;
+                       document.getElementById(changeID).style.border = "1px solid black";
 
-    if(selectedID != null)
-        document.getElementById(selectedID).style.border = "1px solid black";
+                    }
+                }
+        }
+
+        if(id != null)
+            selectedID = id;
+
+        var nums = selectedID.split("_");
+        var row = parseInt(nums[0]);
+        var col = parseInt(nums[1]);
+        document.getElementById('selectedRow').innerHTML = row;
+        document.getElementById('selectedCol').innerHTML = col;
+        var length = getShipLength();
+        var orientation = getOrientation();
+        if(orientation == "vertical"){
+            for(var i = 0; i < length; i++){
+                var newID = (row+i) + "_" + col;
+                if((row + length - 1) < 11){
+                    document.getElementById(selectedID).style.border = "1px solid #7CFC00";
+                    document.getElementById(newID).style.border = "1px solid #7CFC00";
+                }
+                else{
+                        document.getElementById(selectedID).style.border = "1px solid red";
+                        document.getElementById(newID).style.border = "1px solid red";
+
+                }
+
+            }
+        }
+        else{
+                for(var i = 0; i < length; i++){
+                    var newID = (row) + "_" + (col + i);
+                    if((col + length - 1) < 11){
+                        document.getElementById(selectedID).style.border = "1px solid #7CFC00";
+                        document.getElementById(newID).style.border = "1px solid #7CFC00";
+                    }
+                    else{
+                        document.getElementById(selectedID).style.border = "1px solid red";
+                        document.getElementById(newID).style.border = "1px solid red";
+
+                    }
+                }
 
 
-    selectedID = id;
-    document.getElementById(selectedID).style.border = "1px solid red";
+        }
+    }
 
-
-    var nums = selectedID.split("_");
-    var row = nums[0];
-    var col = nums[1];
-    document.getElementById('selectedRow').innerHTML = row;
-    document.getElementById('selectedCol').innerHTML = col;
 
 }
 
 function cellFireClick(id){
+
 
     //Duplicate of cellPlaceClick but modifies fireRowLabel and fireColLabel
     //Could be merged with cellPlaceClick using another function parameter
     enableButton('scanButton');
     enableButton('fireButton');
 
-    document.getElementById('scanResult').innerHTML = "";
+
     if(selectedID != null)
         document.getElementById(selectedID).style.border = "1px solid black";
 
@@ -264,10 +313,29 @@ function cellFireClick(id){
         var col = nums[1];
         document.getElementById('fireRowLabel').innerHTML = row;
         document.getElementById('fireColLabel').innerHTML = col;
+        document.getElementById('fireColLabel').innerHTML = col;displayShip
 
 }
 
+function getShipLength(){
+    var ship = document.querySelector('input[name="ship"]:checked').value;
+    if(ship == "aircraftCarrier")
+        return 5;
+    else if(ship == "battleship")
+        return 4;
+    else if(ship == "cruiser")
+        return 3;
+    else
+        return 2;
 
+}
+function getOrientation(){
+    var orientation = document.querySelector('input[name="orientation"]:checked').value;
+    if(orientation == "horizontal")
+        return "horizontal"
+    else
+        return "vertical"
+}
 
 function displayShip(ship){
  startCoordAcross = ship.start.Across;
