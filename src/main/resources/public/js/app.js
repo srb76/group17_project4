@@ -7,6 +7,7 @@ $( document ).ready(function() {
   $.getJSON("model", function( json ) {
   gameModel = json;
     //console.log( "JSON Data: " + json );
+    displayMessage("Please place all of your ships by selecting the cell you would like to place the ship at and selecting the orientation of the ship. Then place the place button");
    });
 });
 
@@ -22,8 +23,9 @@ function placeShip() {
     var $radio = $('input[name="ship"]:checked');
     var selected_ship = $radio.val();
     var radioID = $radio.attr('id');
+    var messageToDisplay = "Placed " + selected_ship + " at (" + colid + ", " + rowid + ").";
+    displayMessage(messageToDisplay);
 
-   console.log(radioID);
    var selected_orientation = document.querySelector('input[name="orientation"]:checked').value;
    var selected_row = document.getElementById('selectedRow').innerHTML;
    var selected_col = document.getElementById('selectedCol').innerHTML;
@@ -54,6 +56,7 @@ function placeShip() {
         document.getElementById('horizontalRadio').parentNode.style.color = "grey";
 
         document.getElementById(radioID).checked = false;
+        displayMessage("You have place all your ships! You may now fire on the enemy by selecting the cell you would like to fire at and clikcing fire. You may also scan for enemy ships my selecting the cell you would like to scan. Scan will tell you if it found a ship in the cell you selected and any adjacent cell");
      }
      else{
         document.getElementById(id).checked = true;
@@ -65,7 +68,8 @@ function placeShip() {
    });
 
    request.fail(function( jqXHR, textStatus ) {
-     alert( "Illegal Move: " + jqXHR.responseText);
+     var message = "Illegal Move: " + jqXHR.responseText + ". Please Try Again.";
+     displayMessage(message);
    });
 }
 
@@ -96,13 +100,13 @@ var request = $.ajax({
    });
     request.done(function( currModel ) {
         if(currModel.scanResult)
-            document.getElementById('scanResult').innerHTML = "Scan Found a Ship!";
+            var message = "Scan Found a Ship!";
         else
-            document.getElementById('scanResult').innerHTML = "Scan Found Nothing.";
+            var message = "Scan Found Nothing.";
 
      displayGameState(currModel);
      gameModel = currModel;
-
+     displayMessage(message);
    });
 
 
@@ -115,7 +119,8 @@ function fire(){
 
  var selected_row = document.getElementById('fireRowLabel').innerHTML;
  var selected_col = document.getElementById('fireColLabel').innerHTML;
-
+ var message = "You Fired at (" + selected_col + ", " + selected_row + ")";
+ displayMessage(message);
  //document.getElementsByClassName(selectedFireClass)[1].style.border = "1px solid black";
 
 //var menuId = $( "ul.nav" ).first().attr( "id" );
@@ -138,7 +143,8 @@ function fire(){
 
     }
    request.fail(function( jqXHR, textStatus ) {
-     alert( "Ilegal move: " + jqXHR.responseText);
+     var message = "Ilegal move: " + jqXHR.responseText + ". Please Try Again.";
+     displayMessage(message);
    });
 
     //selectedFireClass = null;
@@ -240,7 +246,6 @@ function cellFireClick(id){
     enableButton('scanButton');
     enableButton('fireButton');
 
-    document.getElementById('scanResult').innerHTML = "";
     if(selectedID != null)
         document.getElementById(selectedID).style.border = "1px solid black";
 
@@ -255,7 +260,10 @@ function cellFireClick(id){
         document.getElementById('fireColLabel').innerHTML = col;
 }
 
-
+function displayMessage(toDisplay){
+    var destination = document.getElementById('messageBox');
+    destination.innerHTML = toDisplay;
+}
 
 function displayShip(ship){
  startCoordAcross = ship.start.Across;

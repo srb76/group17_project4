@@ -34,7 +34,6 @@ public class BattleshipModel {
         playerMisses= new ArrayList<>();
         computerHits = new ArrayList<>();
         computerMisses= new ArrayList<>();
-        //computerScore = new ArrayList<>();
         playerShipPoints = new ArrayList<>();
         computerShipPoints = new ArrayList<>();
         computer_aircraftCarrier = placeEnemyShip("computer_aircraftCarrier", 5);
