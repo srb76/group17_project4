@@ -348,7 +348,6 @@ function getOrientation(){
         return "horizontal"
     else
         return "vertical"
->>>>>>> 8fdaa567caf32d107620470b0a1f021073ba9e7f
 }
 
 function displayShip(ship){
