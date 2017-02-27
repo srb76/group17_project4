@@ -129,19 +129,15 @@ padding-right: 0px;
 }
 
 .myButton {
-	background-color:#fae500;
 	-moz-border-radius:12px;
 	-webkit-border-radius:12px;
 	border-radius:12px;
-	border:2px solid #fae500;
 	display:inline-block;
 	cursor:pointer;
-	color:#ffffff;
 	font-family:Arial;
 	font-size:22px;
 	padding:10px 20px;
 	text-decoration:none;
-	text-shadow:0px 1px 0px #fae500;
 	width: 100%;
 }
 .myButton:hover {
@@ -152,20 +148,19 @@ padding-right: 0px;
 	top:1px;
 }
 
+
+
+
 .fireButton {
-	background-color:#DC143C;
 	-moz-border-radius:12px;
 	-webkit-border-radius:12px;
 	border-radius:12px;
-	border:2px solid #DC143C;
 	display:inline-block;
 	cursor:pointer;
-	color:black;
 	font-family:Arial;
 	font-size:22px;
 	padding:10px 20px;
 	text-decoration:none;
-	text-shadow:0px 1px 0px #DC143C;
 	width: 100%;
 }
 .fireButton:hover {
@@ -176,19 +171,15 @@ padding-right: 0px;
 	top:1px;
 }
 .scanButton {
-	background-color:#008000;
 	-moz-border-radius:12px;
 	-webkit-border-radius:12px;
 	border-radius:12px;
-	border:2px solid #008000;
 	display:inline-block;
 	cursor:pointer;
-	color:black;
 	font-family:Arial;
 	font-size:22px;
 	padding:10px 20px;
 	text-decoration:none;
-	text-shadow:0px 1px 0px #008000;
 	width: 100%;
 }
 .scanButton:hover {

@@ -5,15 +5,26 @@ package edu.oregonstate.cs361.battleship;
  */
 public class Ship {
     private String name;
-    private int length;
+    protected int length;
     private Coordinate start;
     private Coordinate end;
     private Coordinate[] myPoints;
-    public Ship(String n, int l,Coordinate s, Coordinate e) {
+    private boolean visibility;
+    private boolean shipSunk;
+    protected int counter = 0;
+
+    public Ship(String n, int l,Coordinate s, Coordinate e, boolean stealth) {
         name = n;
         length = l;
         start = s;
         end = e;
+        visibility = stealth;
+    }
+    void addHit(){
+        counter++;
+    }
+    public int returnCounter(){
+        return counter;
     }
     public Ship(String n, int l) {
         name = n;
@@ -27,6 +38,21 @@ public class Ship {
     }
     public void setPoints(Coordinate[] points){
         myPoints = points;
+    }
+    public void isSunk(boolean sunk){
+        shipSunk = sunk;
+    }
+
+    public void setVisiblity(boolean visible){
+        visibility = visible;
+    }
+
+    public boolean containsPoint(Coordinate point){
+        for(int i = 0; i < myPoints.length; i++) {
+            if (myPoints[i].equals(point))
+                return true;
+        }
+        return false;
     }
 
     public Coordinate[] getPoints(){
