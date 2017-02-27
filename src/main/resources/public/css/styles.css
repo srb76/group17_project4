@@ -27,6 +27,39 @@ border:12px;
     top: 72%;
     left: 45%;
 }
+
+#headerCont{
+    width: 364px;
+    margin-left: 260px;
+    margin-top: 5px;
+    padding: 12px;
+
+}
+
+#headerCellCont{
+    width: 364px;
+}
+
+.msgBoxCont {
+            width: 345px;
+            background-color: #CCCCCC;
+            margin-top: 5px;
+            margin-left: 260px;
+            display: inline-block;
+            border-radius: 12px;
+}
+#messageBox {
+    position: absolute;
+    width: 355px;
+    word-wrap: break-word;
+    height: 150px;
+    border: 12px;
+    border-color: #008000;
+    background-color: #CCCCCC;
+    border-radius: 12px;
+    padding: 12px;
+}
+
 #myheader{
 	color:#ddd9d9;
 	text-align:center;
@@ -517,6 +550,12 @@ footer:before {
 
 #todo-count strong {
     font-weight: 300;
+}
+
+#messageBox {
+    margin: 20px;
+    padding: 20 px;
+    color: white !important;
 }
 
 #filters {

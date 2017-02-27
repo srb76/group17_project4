@@ -40,7 +40,6 @@ public class BattleshipModel {
         playerMisses= new ArrayList<>();
         computerHits = new ArrayList<>();
         computerMisses= new ArrayList<>();
-        //computerScore = new ArrayList<>();
         playerShipPoints = new ArrayList<>();
         computerShipPoints = new ArrayList<>();
         myShips = new Ship[5];
