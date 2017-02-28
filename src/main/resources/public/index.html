@@ -11,6 +11,23 @@
 
 <body>
 <h1 id = "myheader">BATTLESHIP</h1>
+<div id="endGame" class="endMsgOuter">
+    <div id="victory" class="endMsgInner">
+        <h2>VICTORY!</h2>
+        <h3>Congratulations! You have sunk all your opponents ships and won the game!
+            Click the reset button below to restart the game!
+        </h3>
+        <button onclick="window.location.reload()">Reset Game</button>
+    </div>
+    <div id = "defeat" class="endMsgInner">
+        <h2>DEFEAT!</h2>
+        <h3>All your ships have been sunk!
+            You have lost the game.
+            Click the reset button below to restart the game.
+        </h3>
+        <button onclick="window.location.reload()">Reset Game</button>
+    </div>
+</div>
 <section id="todoapp" ic-target="this">
     <!--#parse("/velocity/todoList.vm")-->
     <table id="boardsTable">

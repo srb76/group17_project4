@@ -10,7 +10,7 @@ $( document ).ready(function() {
   disableButton('fireButton');
   disableButton('placeShipButton');
     //console.log( "JSON Data: " + json );
-    displayMessage("Please place all of your ships by selecting the cell you would like to place the ship at and selecting the orientation of the ship. Then place the place button");
+    displayMessage("Please place all of your ships by selecting the cell you would like to place the ship at and selecting the orientation of the ship. Then click the place button.");
    });
 });
 
@@ -33,7 +33,7 @@ function placeShip() {
     var $radio = $('input[name="ship"]:checked');
     var selected_ship = $radio.val();
     var radioID = $radio.attr('id');
-    var messageToDisplay = "Placed " + selected_ship + " at (" + colid + ", " + rowid + ").";
+    var messageToDisplay = "Placed " + selected_ship + " at (" + rowid + ", " + colid + ").";
     displayMessage(messageToDisplay);
 
    var selected_orientation = document.querySelector('input[name="orientation"]:checked').value;
@@ -65,7 +65,7 @@ function placeShip() {
 
 
         document.getElementById(radioID).checked = false;
-        displayMessage("You have place all your ships! You may now fire on the enemy by selecting the cell you would like to fire at and clikcing fire. You may also scan for enemy ships my selecting the cell you would like to scan. Scan will tell you if it found a ship in the cell you selected and any adjacent cell");
+        displayMessage("You have placed all your ships! You may now fire on the enemy by selecting the cell you would like to fire at and then click the fire button. You may also scan for enemy ships my selecting the cell you would like to scan. Scan will tell you if it found a ship in the cell you selected and any adjacent cell.");
      }
      else{
         document.getElementById(id).checked = true;
@@ -129,7 +129,7 @@ if(selectedID != null)
         document.getElementById(selectedID).style.border = "1px solid black";
  var selected_row = document.getElementById('fireRowLabel').innerHTML;
  var selected_col = document.getElementById('fireColLabel').innerHTML;
- var message = "You Fired at (" + selected_col + ", " + selected_row + ")";
+ var message = "You Fired at (" + selected_row + ", " + selected_col + ")";
  displayMessage(message);
  //document.getElementsByClassName(selectedFireClass)[1].style.border = "1px solid black";
 
@@ -150,6 +150,19 @@ if(selectedID != null)
     document.getElementById("playerScore").innerHTML = gameModel.computerHits.length;
     document.getElementById("computerScore").innerHTML = gameModel.playerHits.length;
 
+    //Check for player victory
+    if(gameModel.computerHits.length == 14)
+    {
+        document.getElementById("endGame").style.display = "block";
+        document.getElementById("victory").style.display = "block";
+    }
+
+    //Check for AI victory
+    if(gameModel.playerHits.length == 14)
+    {
+        document.getElementById("endGame").style.display = "block";
+        document.getElementById("defeat").style.display = "block";
+    }
 
     }
    request.fail(function( jqXHR, textStatus ) {
@@ -304,6 +317,8 @@ function cellFireClick(id){
 
     //Duplicate of cellPlaceClick but modifies fireRowLabel and fireColLabel
     //Could be merged with cellPlaceClick using another function parameter
+    if(ships_placed)
+    {
     enableButton('scanButton');
     enableButton('fireButton');
 
@@ -321,6 +336,7 @@ function cellFireClick(id){
         document.getElementById('fireRowLabel').innerHTML = row;
         document.getElementById('fireColLabel').innerHTML = col;
         document.getElementById('fireColLabel').innerHTML = col;displayShip
+     }
 
 }
 
