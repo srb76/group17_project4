@@ -40,7 +40,6 @@ public class BattleshipModel {
         playerMisses= new ArrayList<>();
         computerHits = new ArrayList<>();
         computerMisses= new ArrayList<>();
-        //computerScore = new ArrayList<>();
         playerShipPoints = new ArrayList<>();
         computerShipPoints = new ArrayList<>();
         myShips = new Ship[5];
@@ -84,6 +83,7 @@ public class BattleshipModel {
     public Ship placeEnemyShip(String name, int length){
 
         boolean valid = false;
+        boolean visibleShip = true;
 
         int orientation = 0;
         int row = 0;
@@ -123,11 +123,13 @@ public class BattleshipModel {
                 computerShipPoints.add(myPoints[i]);
             }
         }
-        Ship currentShip;
-        if(name.equals("computer_aircraftCarrier"))
-            currentShip = new Ship(name, length, startCoordinate, endCoordinate, false);
-        else
-            currentShip = new Ship(name, length, startCoordinate, endCoordinate, true);
+  
+        //Give stealth to Computer_Battleship and Computer_Submarine
+        if(name == "Computer_Battleship" || name == "Computer_Submarine")
+            visibleShip = false;
+
+        Ship currentShip = new Ship(name, length, startCoordinate, endCoordinate, visibleShip);
+
         currentShip.setPoints(myPoints);
 
             return currentShip;
@@ -295,6 +297,22 @@ public class BattleshipModel {
         Coordinate left = new Coordinate(row, col-1);
         Coordinate right = new Coordinate(row, col+1);
 
+        ArrayList<Coordinate> coords = new ArrayList<Coordinate>();
+        Ship shipToCheck;
+
+        //Add Coordinates to arraylist coords
+        coords.add(up);
+        coords.add(down);
+        coords.add(left);
+        coords.add(right);
+
+        //For each coordinate, get the ship that is at that coordinate and then check if it has stealth
+        for(Coordinate coord : coords)
+        {
+            shipToCheck = getShipFromCoordinate(coord);
+            if (shipToCheck != null && shipToCheck.isVisible() )
+                scanResult = true;
+        }
 
 
     }
