@@ -10,10 +10,18 @@ $( document ).ready(function() {
   disableButton('fireButton');
   disableButton('placeShipButton');
     //console.log( "JSON Data: " + json );
+    displayMessage("Please place all of your ships by selecting the cell you would like to place the ship at and selecting the orientation of the ship. Then place the place button");
    });
 });
 
 function placeShip() {
+    for(var i=1; i < 11; i++){
+                for(var j=1; j < 11; j++){
+                   var changeID = i +"_"+j;
+                   document.getElementById(changeID).style.border = "1px solid black";
+
+                }
+    }
    disableButton('placeShipButton');
    var rowid = document.getElementById('selectedRow').innerHTML;
    var colid = document.getElementById('selectedCol').innerHTML;
@@ -25,8 +33,9 @@ function placeShip() {
     var $radio = $('input[name="ship"]:checked');
     var selected_ship = $radio.val();
     var radioID = $radio.attr('id');
+    var messageToDisplay = "Placed " + selected_ship + " at (" + colid + ", " + rowid + ").";
+    displayMessage(messageToDisplay);
 
-   console.log(radioID);
    var selected_orientation = document.querySelector('input[name="orientation"]:checked').value;
    var selected_row = document.getElementById('selectedRow').innerHTML;
    var selected_col = document.getElementById('selectedCol').innerHTML;
@@ -54,7 +63,9 @@ function placeShip() {
         document.getElementById('horizontalRadio').parentNode.style.color = "grey";
         ships_placed = true;
 
+
         document.getElementById(radioID).checked = false;
+        displayMessage("You have place all your ships! You may now fire on the enemy by selecting the cell you would like to fire at and clikcing fire. You may also scan for enemy ships my selecting the cell you would like to scan. Scan will tell you if it found a ship in the cell you selected and any adjacent cell");
      }
      else{
         document.getElementById(id).checked = true;
@@ -66,14 +77,13 @@ function placeShip() {
    });
 
    request.fail(function( jqXHR, textStatus ) {
-     alert( "Illegal Move: " + jqXHR.responseText);
+     var message = "Illegal Move: " + jqXHR.responseText + ". Please Try Again.";
+     displayMessage(message);
    });
 }
 
 function getNextButton(id){
     var myRadioButtons = document.getElementsByClassName('shipRadio');
-    console.log(myRadioButtons);
-
     for(i = 0; i < 5; i++){
         if(myRadioButtons[i].disabled == false){
             return myRadioButtons[i].id;
@@ -85,6 +95,8 @@ function getNextButton(id){
 
 
 function scan(){
+if(selectedID != null)
+        document.getElementById(selectedID).style.border = "1px solid black";
 var selected_row = parseInt(document.getElementById('fireRowLabel').innerHTML);
 var selected_col = parseInt(document.getElementById('fireColLabel').innerHTML);
 
@@ -97,12 +109,13 @@ var request = $.ajax({
    });
     request.done(function( currModel ) {
         if(currModel.scanResult)
-            document.getElementById('scanResult').innerHTML = "Scan Found a Ship!";
+            var message = "Scan Found a Ship!";
         else
-            document.getElementById('scanResult').innerHTML = "Scan Found Nothing.";
+            var message = "Scan Found Nothing.";
+
      displayGameState(currModel);
      gameModel = currModel;
-
+     displayMessage(message);
    });
 
 
@@ -112,10 +125,12 @@ var request = $.ajax({
 
 
 function fire(){
-
+if(selectedID != null)
+        document.getElementById(selectedID).style.border = "1px solid black";
  var selected_row = document.getElementById('fireRowLabel').innerHTML;
  var selected_col = document.getElementById('fireColLabel').innerHTML;
-
+ var message = "You Fired at (" + selected_col + ", " + selected_row + ")";
+ displayMessage(message);
  //document.getElementsByClassName(selectedFireClass)[1].style.border = "1px solid black";
 
 //var menuId = $( "ul.nav" ).first().attr( "id" );
@@ -138,7 +153,8 @@ function fire(){
 
     }
    request.fail(function( jqXHR, textStatus ) {
-     alert( "Ilegal move: " + jqXHR.responseText);
+     var message = "Ilegal move: " + jqXHR.responseText + ". Please Try Again.";
+     displayMessage(message);
    });
 
     //selectedFireClass = null;
@@ -224,34 +240,74 @@ for (var i = 0; i < gameModel.playerHits.length; i++) {
 
 }
 
-
 function cellPlaceClick(id){
-    enableButton('placeShipButton');
+    if(ships_placed == false){
+        enableButton('placeShipButton');
+        if(selectedID != null){
+                for(var i=1; i < 11; i++){
+                    for(var j=1; j < 11; j++){
+                       var changeID = i +"_"+j;
+                       document.getElementById(changeID).style.border = "1px solid black";
 
-    if(selectedID != null)
-        document.getElementById(selectedID).style.border = "1px solid black";
+                    }
+                }
+        }
+
+        if(id != null)
+            selectedID = id;
+
+        var nums = selectedID.split("_");
+        var row = parseInt(nums[0]);
+        var col = parseInt(nums[1]);
+        document.getElementById('selectedRow').innerHTML = row;
+        document.getElementById('selectedCol').innerHTML = col;
+        var length = getShipLength();
+        var orientation = getOrientation();
+        if(orientation == "vertical"){
+            for(var i = 0; i < length; i++){
+                var newID = (row+i) + "_" + col;
+                if((row + length - 1) < 11){
+                    document.getElementById(selectedID).style.border = "1px solid #7CFC00";
+                    document.getElementById(newID).style.border = "1px solid #7CFC00";
+                }
+                else{
+                        document.getElementById(selectedID).style.border = "1px solid red";
+                        document.getElementById(newID).style.border = "1px solid red";
+
+                }
+
+            }
+        }
+        else{
+                for(var i = 0; i < length; i++){
+                    var newID = (row) + "_" + (col + i);
+                    if((col + length - 1) < 11){
+                        document.getElementById(selectedID).style.border = "1px solid #7CFC00";
+                        document.getElementById(newID).style.border = "1px solid #7CFC00";
+                    }
+                    else{
+                        document.getElementById(selectedID).style.border = "1px solid red";
+                        document.getElementById(newID).style.border = "1px solid red";
+
+                    }
+                }
 
 
-    selectedID = id;
-    document.getElementById(selectedID).style.border = "1px solid red";
+        }
+    }
 
-
-    var nums = selectedID.split("_");
-    var row = nums[0];
-    var col = nums[1];
-    document.getElementById('selectedRow').innerHTML = row;
-    document.getElementById('selectedCol').innerHTML = col;
 
 }
 
 function cellFireClick(id){
+
 
     //Duplicate of cellPlaceClick but modifies fireRowLabel and fireColLabel
     //Could be merged with cellPlaceClick using another function parameter
     enableButton('scanButton');
     enableButton('fireButton');
 
-    document.getElementById('scanResult').innerHTML = "";
+
     if(selectedID != null)
         document.getElementById(selectedID).style.border = "1px solid black";
 
@@ -264,10 +320,35 @@ function cellFireClick(id){
         var col = nums[1];
         document.getElementById('fireRowLabel').innerHTML = row;
         document.getElementById('fireColLabel').innerHTML = col;
+        document.getElementById('fireColLabel').innerHTML = col;displayShip
 
 }
 
 
+function displayMessage(toDisplay){
+    var destination = document.getElementById('messageBox');
+    destination.innerHTML = toDisplay;
+ }
+
+function getShipLength(){
+    var ship = document.querySelector('input[name="ship"]:checked').value;
+    if(ship == "aircraftCarrier")
+        return 5;
+    else if(ship == "battleship")
+        return 4;
+    else if(ship == "cruiser")
+        return 3;
+    else
+        return 2;
+
+}
+function getOrientation(){
+    var orientation = document.querySelector('input[name="orientation"]:checked').value;
+    if(orientation == "horizontal")
+        return "horizontal"
+    else
+        return "vertical"
+}
 
 function displayShip(ship){
  startCoordAcross = ship.start.Across;
