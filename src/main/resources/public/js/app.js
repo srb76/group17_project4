@@ -95,6 +95,7 @@ if(selectedID != null)
         document.getElementById(selectedID).style.border = "1px solid black";
 var selected_row = parseInt(document.getElementById('fireRowLabel').innerHTML);
 var selected_col = parseInt(document.getElementById('fireColLabel').innerHTML);
+console.log(selected_row + "   " + selected_col);
 
 var request = $.ajax({
      url: "/scan/"+selected_row+"/"+selected_col,
@@ -104,6 +105,7 @@ var request = $.ajax({
      dataType: "json"
    });
     request.done(function( currModel ) {
+        console.log(currModel.scanResult);
         if(currModel.scanResult)
             document.getElementById('scanResult').innerHTML = "Scan Found a Ship!";
         else
@@ -113,6 +115,9 @@ var request = $.ajax({
 
    });
 
+ request.fail(function( jqXHR, textStatus ) {
+     alert( "Error in Scan");
+   });
 
 
 
@@ -213,6 +218,7 @@ displayEnemyShip(gameModel.computer_cruiser);
 displayEnemyShip(gameModel.computer_destroyer);
 displayEnemyShip(gameModel.computer_submarine);
 */
+
 
 //Now checks element ending with "_ai"
 for (var i = 0; i < gameModel.computerMisses.length; i++) {

@@ -87,7 +87,8 @@ public class Main {
         String col = req.params("col");
         int rowInt = Integer.parseInt(row);
         int colInt = Integer.parseInt(col);
-        currModel.scan(rowInt,colInt);
+        currModel.scan(rowInt, colInt);
+        System.out.println(currModel.getScanResult());
         currModel.shootAtPlayer();
         Gson gson = new Gson();
         return gson.toJson(currModel);

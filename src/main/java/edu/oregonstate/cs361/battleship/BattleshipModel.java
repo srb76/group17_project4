@@ -123,7 +123,11 @@ public class BattleshipModel {
                 computerShipPoints.add(myPoints[i]);
             }
         }
-        Ship currentShip = new Ship(name, length, startCoordinate, endCoordinate, false);
+        Ship currentShip;
+        if(name.equals("computer_aircraftCarrier"))
+            currentShip = new Ship(name, length, startCoordinate, endCoordinate, false);
+        else
+            currentShip = new Ship(name, length, startCoordinate, endCoordinate, true);
         currentShip.setPoints(myPoints);
 
             return currentShip;
@@ -278,6 +282,11 @@ public class BattleshipModel {
         }
     }
 
+    public boolean getScanResult(){
+
+        return this.scanResult;
+    }
+
     public void scan(int row, int col){
         scanResult = false;
         Coordinate scanCoord = new Coordinate(row, col);
@@ -285,12 +294,8 @@ public class BattleshipModel {
         Coordinate down = new Coordinate(row+1, col);
         Coordinate left = new Coordinate(row, col-1);
         Coordinate right = new Coordinate(row, col+1);
-        if(getShipFromCoordinate(scanCoord) != null || getShipFromCoordinate(up) != null
-                    || getShipFromCoordinate(down) != null
-                    || getShipFromCoordinate(left) != null
-                    || getShipFromCoordinate(right)!= null){
-                scanResult = true;
-        }
+
+
 
     }
 
