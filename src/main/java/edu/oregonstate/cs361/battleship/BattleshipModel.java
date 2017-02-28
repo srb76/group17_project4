@@ -123,7 +123,7 @@ public class BattleshipModel {
                 computerShipPoints.add(myPoints[i]);
             }
         }
-  
+
         //Give stealth to Computer_Battleship and Computer_Submarine
         if(name == "Computer_Battleship" || name == "Computer_Submarine")
             visibleShip = false;
