@@ -43,9 +43,12 @@ public class Ship {
         shipSunk = sunk;
     }
 
+    //Stealth features
     public void setVisiblity(boolean visible){
         visibility = visible;
     }
+
+    public boolean isVisible() {return visibility;}
 
     public boolean containsPoint(Coordinate point){
         for(int i = 0; i < myPoints.length; i++) {
