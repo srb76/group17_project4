@@ -9,11 +9,11 @@ import java.util.Random;
  * Created by michaelhilton on 1/4/17.
  */
 public class BattleshipModel {
-    private Ship aircraftCarrier = new Ship("AircraftCarrier",5, new Coordinate(0,0),new Coordinate(0,0));
-    private Ship battleship = new Ship("Battleship",4, new Coordinate(0,0),new Coordinate(0,0));
-    private Ship cruiser = new Ship("Cruiser",3, new Coordinate(0,0),new Coordinate(0,0));
-    private Ship destroyer = new Ship("Destroyer",2, new Coordinate(0,0),new Coordinate(0,0));
-    private Ship submarine = new Ship("Submarine",2, new Coordinate(0,0),new Coordinate(0,0));
+    private Ship aircraftCarrier = new Ship("AircraftCarrier",5, new Coordinate(0,0),new Coordinate(0,0),false);
+    private Ship battleship = new Ship("Battleship",4, new Coordinate(0,0),new Coordinate(0,0),true);
+    private Ship cruiser = new Ship("Cruiser",3, new Coordinate(0,0),new Coordinate(0,0),true);
+    private Ship destroyer = new Ship("Destroyer",2, new Coordinate(0,0),new Coordinate(0,0),true);
+    private Ship submarine = new Ship("Submarine",2, new Coordinate(0,0),new Coordinate(0,0),true);
 
 
 
@@ -40,7 +40,6 @@ public class BattleshipModel {
         playerMisses= new ArrayList<>();
         computerHits = new ArrayList<>();
         computerMisses= new ArrayList<>();
-        //computerScore = new ArrayList<>();
         playerShipPoints = new ArrayList<>();
         computerShipPoints = new ArrayList<>();
         myShips = new Ship[5];
@@ -84,6 +83,7 @@ public class BattleshipModel {
     public Ship placeEnemyShip(String name, int length){
 
         boolean valid = false;
+        boolean visibleShip = true;
 
         int orientation = 0;
         int row = 0;
@@ -123,7 +123,12 @@ public class BattleshipModel {
                 computerShipPoints.add(myPoints[i]);
             }
         }
-        Ship currentShip = new Ship(name, length, startCoordinate, endCoordinate);
+
+        //Give stealth to Computer_Battleship and Computer_Submarine
+        if(name == "Computer_Battleship" || name == "Computer_Submarine")
+            visibleShip = false;
+
+        Ship currentShip = new Ship(name, length, startCoordinate, endCoordinate, visibleShip);
         currentShip.setPoints(myPoints);
 
             return currentShip;
@@ -285,12 +290,33 @@ public class BattleshipModel {
         Coordinate down = new Coordinate(row+1, col);
         Coordinate left = new Coordinate(row, col-1);
         Coordinate right = new Coordinate(row, col+1);
-        if(getShipFromCoordinate(scanCoord) != null || getShipFromCoordinate(up) != null
+        ArrayList<Coordinate> coords = new ArrayList<Coordinate>();
+        Ship shipToCheck;
+
+        //Add Coordinates to arraylist coords
+        coords.add(up);
+        coords.add(down);
+        coords.add(left);
+        coords.add(right);
+
+        //For each coordinate, get the ship that is at that coordinate and then check if it has stealth
+        for(Coordinate coord : coords)
+        {
+            shipToCheck = getShipFromCoordinate(coord);
+            if (shipToCheck != null && shipToCheck.isVisible() )
+                scanResult = true;
+        }
+
+/*
+        if(
+                getShipFromCoordinate(scanCoord) != null
+                    || getShipFromCoordinate(up) != null
                     || getShipFromCoordinate(down) != null
                     || getShipFromCoordinate(left) != null
                     || getShipFromCoordinate(right)!= null){
                 scanResult = true;
         }
+*/
 
     }
 
