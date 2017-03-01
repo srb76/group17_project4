@@ -1,5 +1,6 @@
 package edu.oregonstate.cs361.battleship;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -14,12 +15,17 @@ public class BattleshipModel {
     private Ship destroyer = new Ship("Destroyer",2, new Coordinate(0,0),new Coordinate(0,0));
     private Ship submarine = new Ship("Submarine",2, new Coordinate(0,0),new Coordinate(0,0));
 
+
+
     private Ship computer_aircraftCarrier;
     private Ship computer_battleship;
     private Ship computer_cruiser;
     private Ship computer_destroyer;
     private Ship computer_submarine;
 
+    private Ship[] myShips;
+    private int shipPlaceIndex = 0;
+    private Ship[] enemyShips;
     private ArrayList<Coordinate> playerHits;
     private ArrayList<Coordinate> playerMisses;
     private ArrayList<Coordinate> computerHits;
@@ -37,11 +43,20 @@ public class BattleshipModel {
         //computerScore = new ArrayList<>();
         playerShipPoints = new ArrayList<>();
         computerShipPoints = new ArrayList<>();
+        myShips = new Ship[5];
+        enemyShips = new Ship[5];
+
         computer_aircraftCarrier = placeEnemyShip("computer_aircraftCarrier", 5);
         computer_battleship = placeEnemyShip("Computer_Battleship",4);
         computer_cruiser = placeEnemyShip("Computer_Cruiser",3);
         computer_destroyer = placeEnemyShip("Computer_Destroyer",2);
         computer_submarine = placeEnemyShip("Computer_Submarine",2);
+        enemyShips[0] = computer_aircraftCarrier;
+        enemyShips[1] = computer_battleship;
+        enemyShips[2] = computer_cruiser;
+        enemyShips[3] = computer_destroyer;
+        enemyShips[4] = computer_submarine;
+
         scanResult = false;
     }
 
@@ -180,6 +195,8 @@ public class BattleshipModel {
                 playerShipPoints.add(toAdd);
             }
             getShip(shipName).setLocation(start, end);
+            myShips[shipPlaceIndex] = getShip(shipName);
+            shipPlaceIndex++;
         } else { //horizantal
             if((Down + size -1) > 10)
                 return "Ship Placement out of bounds";
@@ -199,12 +216,16 @@ public class BattleshipModel {
                 playerShipPoints.add(toAdd);
             }
             getShip(shipName).setLocation(start, end);
+            myShips[shipPlaceIndex] = getShip(shipName);
+            shipPlaceIndex++;
         }
 
         return null;
     }
 
     public String shootAtComputer(int row, int col) {
+
+
         //Note: Reversed order for checking computerHits and computerMisses
         if(row > 10 || col > 10)
             return "That Shot is off the board!";
@@ -217,20 +238,19 @@ public class BattleshipModel {
                 return "You have already fired there!";
         }
         Coordinate coor = new Coordinate(row,col);
-        if(computer_aircraftCarrier.covers(coor)){
-            computerHits.add(coor);
-        }else if (computer_battleship.covers(coor)){
-            computerHits.add(coor);
-        }else if (computer_cruiser.covers(coor)){
-            computerHits.add(coor);
-        }else if (computer_destroyer.covers(coor)){
-            computerHits.add(coor);
-        }else if (computer_submarine.covers(coor)){
-            computerHits.add(coor);
-        } else {
+
+        boolean hit = false;
+        for(int i = 0; i < 5; i++){
+            if(enemyShips[i].covers(coor)){
+                computerHits.add(coor);
+                hit = true;
+            }
+        }
+        if(!hit){
             computerMisses.add(coor);
         }
         return null;
+
     }
 
     public void shootAtPlayer() {
@@ -246,20 +266,14 @@ public class BattleshipModel {
         if(playerMisses.contains(coor)){
             System.out.println("Dupe");
         }
-
-
-        if(aircraftCarrier.covers(coor)){
-            playerHits.add(coor);
-            //computerScore.add(5);
-        }else if (battleship.covers(coor)){
-            playerHits.add(coor);
-        }else if (cruiser.covers(coor)){
-            playerHits.add(coor);
-        }else if (destroyer.covers(coor)){
-            playerHits.add(coor);
-        }else if (submarine.covers(coor)){
-            playerHits.add(coor);
-        } else {
+        boolean hit = false;
+        for(int i = 0; i < 5; i++){
+            if(myShips[i].covers(coor)){
+                playerHits.add(coor);
+                hit = true;
+            }
+        }
+        if(!hit){
             playerMisses.add(coor);
         }
     }
@@ -271,15 +285,26 @@ public class BattleshipModel {
         Coordinate down = new Coordinate(row+1, col);
         Coordinate left = new Coordinate(row, col-1);
         Coordinate right = new Coordinate(row, col+1);
-        for(int i = 0; i < computerShipPoints.size(); i++){
-            if(computerShipPoints.get(i).equals(scanCoord) || computerShipPoints.get(i).equals(up)
-                    || computerShipPoints.get(i).equals(down)
-                    || computerShipPoints.get(i).equals(left)
-                    || computerShipPoints.get(i).equals(right))
+        if(getShipFromCoordinate(scanCoord) != null || getShipFromCoordinate(up) != null
+                    || getShipFromCoordinate(down) != null
+                    || getShipFromCoordinate(left) != null
+                    || getShipFromCoordinate(right)!= null){
                 scanResult = true;
         }
 
-
     }
 
-}
+    //this will return the ship object that is on the cooordinate parameter
+    //null otherwise
+    private Ship getShipFromCoordinate(Coordinate c){
+        for(int i = 0; i < 5; i++){
+            if(enemyShips[i].containsPoint(c)){
+                return enemyShips[i];
+            }
+        }
+        return null;
+    }
+
+
+
+}//end class
