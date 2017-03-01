@@ -40,6 +40,10 @@ border:12px;
     width: 364px;
 }
 
+#resetButton {
+    background-color: #fae500;
+}
+
 .msgBoxCont {
             width: 345px;
             background-color: #CCCCCC;
