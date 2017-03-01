@@ -77,7 +77,7 @@ public class BattleshipModel {
             return aircraftCarrier;
         } if(shipName.equalsIgnoreCase("battleship")) {
             return battleship;
-        } if(shipName.equalsIgnoreCase("Clipper")) {
+        } if(shipName.equalsIgnoreCase("clipper")) {
         return clipper;
         } if(shipName.equalsIgnoreCase("dinghy")) {
             return dinghy;
@@ -199,7 +199,6 @@ public class BattleshipModel {
                 return "Ship Placement out of bounds";
             Coordinate start = new Coordinate(Across, Down);
             Coordinate end = new Coordinate(endAcross, endDown);
-            System.out.println("setting up test ship");
             testShip = new MilitaryShip("test", size, start, end, false);
             for(int i = 0; i < playerShipPoints.size(); i++){
                 System.out.println("using test ship");

@@ -3,7 +3,7 @@ package edu.oregonstate.cs361.battleship;
 /**
  * Created by michaelhilton on 1/5/17.
  */
-abstract public class Ship {
+public class Ship {
     private String name;
     protected int length;
     private Coordinate start;
