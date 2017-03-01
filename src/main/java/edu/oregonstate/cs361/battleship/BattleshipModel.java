@@ -9,27 +9,37 @@ import java.util.Random;
  * Created by michaelhilton on 1/4/17.
  */
 public class BattleshipModel {
-    private Ship aircraftCarrier = new Ship("AircraftCarrier",5, new Coordinate(0,0),new Coordinate(0,0),false);
-    private Ship battleship = new Ship("Battleship",4, new Coordinate(0,0),new Coordinate(0,0),true);
-    private Ship cruiser = new Ship("Cruiser",3, new Coordinate(0,0),new Coordinate(0,0),true);
-    private Ship destroyer = new Ship("Destroyer",2, new Coordinate(0,0),new Coordinate(0,0),true);
-    private Ship submarine = new Ship("Submarine",2, new Coordinate(0,0),new Coordinate(0,0),true);
+    private MilitaryShip aircraftCarrier = new MilitaryShip("AircraftCarrier",5, new Coordinate(0,0),new Coordinate(0,0),false);
+    private MilitaryShip battleship = new MilitaryShip("Battleship",4, new Coordinate(0,0),new Coordinate(0,0),true);
+    private MilitaryShip submarine = new MilitaryShip("Submarine",2, new Coordinate(0,0),new Coordinate(0,0),true);
+    private CivilianShip clipper = new CivilianShip("Clipper",3, new Coordinate(0,0),new Coordinate(0,0),false);
+    private CivilianShip dinghy = new CivilianShip("Dinghy",1, new Coordinate(0,0),new Coordinate(0,0),false);
 
 
 
-    private Ship computer_aircraftCarrier;
-    private Ship computer_battleship;
-    private Ship computer_cruiser;
-    private Ship computer_destroyer;
-    private Ship computer_submarine;
+    private MilitaryShip computer_aircraftCarrier;
+    private MilitaryShip computer_battleship;
+    private MilitaryShip computer_submarine;
+    private CivilianShip computer_clipper;
+    private CivilianShip computer_dinghy;
 
-    private Ship[] myShips;
-    private int shipPlaceIndex = 0;
-    private Ship[] enemyShips;
+
+    private MilitaryShip[] playerMilitaryShips;
+    private CivilianShip[] playerCivilianShips;
+    private MilitaryShip[] enemyMilitaryShips;
+    private CivilianShip[] enemyCivilianShips;
+    private int militaryPlaceIndex = 0;
+    private int civilianPlaceIndex = 0;
+
     private ArrayList<Coordinate> playerHits;
     private ArrayList<Coordinate> playerMisses;
     private ArrayList<Coordinate> computerHits;
     private ArrayList<Coordinate> computerMisses;
+
+    //these arrays are for which ships have been sunk
+    private ArrayList<Ship> computerShipsSunk;
+    private ArrayList<Ship> playerShipsSunk;
+
     //private ArrayList<Coordinate> computerScore;
     private ArrayList<Coordinate> playerShipPoints;
     private ArrayList<Coordinate> computerShipPoints;
@@ -42,19 +52,26 @@ public class BattleshipModel {
         computerMisses= new ArrayList<>();
         playerShipPoints = new ArrayList<>();
         computerShipPoints = new ArrayList<>();
-        myShips = new Ship[5];
-        enemyShips = new Ship[5];
+        computerShipsSunk = new ArrayList<>();
+        playerShipsSunk = new ArrayList<>();
 
-        computer_aircraftCarrier = placeEnemyShip("computer_aircraftCarrier", 5);
-        computer_battleship = placeEnemyShip("Computer_Battleship",4);
-        computer_cruiser = placeEnemyShip("Computer_Cruiser",3);
-        computer_destroyer = placeEnemyShip("Computer_Destroyer",2);
-        computer_submarine = placeEnemyShip("Computer_Submarine",2);
-        enemyShips[0] = computer_aircraftCarrier;
-        enemyShips[1] = computer_battleship;
-        enemyShips[2] = computer_cruiser;
-        enemyShips[3] = computer_destroyer;
-        enemyShips[4] = computer_submarine;
+        enemyMilitaryShips = new MilitaryShip[3];
+        enemyCivilianShips = new CivilianShip[2];
+        playerMilitaryShips = new MilitaryShip[3];
+        playerCivilianShips = new CivilianShip[2];
+
+
+        computer_aircraftCarrier = (MilitaryShip) placeEnemyShip("Computer_AircraftCarrier", 5, 0);
+        computer_battleship = (MilitaryShip) placeEnemyShip("Computer_Battleship",4, 1);
+        computer_submarine = (MilitaryShip) placeEnemyShip("Computer_Submarine",2, 2);
+        computer_clipper = (CivilianShip) placeEnemyShip("Computer_Clipper",3, 3);
+        computer_dinghy = (CivilianShip) placeEnemyShip("Computer_Dinghy",1, 4);
+
+        enemyMilitaryShips[0] = (computer_aircraftCarrier);
+        enemyMilitaryShips[1] = (computer_battleship);
+        enemyMilitaryShips[2] = (computer_submarine);
+        enemyCivilianShips[0] = (computer_clipper);
+        enemyCivilianShips[1] = (computer_dinghy);
 
         scanResult = false;
     }
@@ -65,22 +82,22 @@ public class BattleshipModel {
     }
 
     public Ship getShip(String shipName) {
-        if (shipName.equalsIgnoreCase("aircraftcarrier")) {
+        if (shipName.equalsIgnoreCase("aircraftCarrier")) {
             return aircraftCarrier;
         } if(shipName.equalsIgnoreCase("battleship")) {
             return battleship;
-        } if(shipName.equalsIgnoreCase("Cruiser")) {
-        return cruiser;
-        } if(shipName.equalsIgnoreCase("destroyer")) {
-            return destroyer;
-        }if(shipName.equalsIgnoreCase("submarine")) {
+        } if(shipName.equalsIgnoreCase("submarine")) {
             return submarine;
+        } if(shipName.equalsIgnoreCase("clipper")) {
+            return clipper;
+        }if(shipName.equalsIgnoreCase("dinghy")) {
+            return dinghy;
         } else {
             return null;
         }
     }
 
-    public Ship placeEnemyShip(String name, int length){
+    public Ship placeEnemyShip(String name, int length, int place_index){
 
         boolean valid = false;
         boolean visibleShip = true;
@@ -128,10 +145,21 @@ public class BattleshipModel {
         if(name == "Computer_Battleship" || name == "Computer_Submarine")
             visibleShip = false;
 
-        Ship currentShip = new Ship(name, length, startCoordinate, endCoordinate, visibleShip);
-        currentShip.setPoints(myPoints);
 
-            return currentShip;
+        Ship currentShip;
+        if(name == "Computer_Battleship" || name == "Computer_Submarine" || name == "Computer_AircraftCarrier"){
+
+            currentShip = new MilitaryShip(name, length, startCoordinate, endCoordinate, visibleShip);
+            currentShip.setPoints(myPoints);
+        }
+        else{
+
+            currentShip = new CivilianShip(name, length, startCoordinate, endCoordinate, visibleShip);
+            currentShip.setPoints(myPoints);
+
+        }
+
+           return currentShip;
     }
 
     private boolean isValidMove(int length, int row, int col, int orientation){
@@ -200,8 +228,16 @@ public class BattleshipModel {
                 playerShipPoints.add(toAdd);
             }
             getShip(shipName).setLocation(start, end);
-            myShips[shipPlaceIndex] = getShip(shipName);
-            shipPlaceIndex++;
+            if(shipName.equals("aircraftCarrier") || shipName.equals("battleship") || shipName.equals("submarine")){
+                getShip(shipName).setLocation(start, end);
+                playerMilitaryShips[militaryPlaceIndex] = (MilitaryShip) getShip(shipName);
+                militaryPlaceIndex++;
+            }
+            else{
+                getShip(shipName).setLocation(start, end);
+                playerCivilianShips[civilianPlaceIndex] = (CivilianShip) getShip(shipName);
+                civilianPlaceIndex++;
+            }
         } else { //horizantal
             if((Down + size -1) > 10)
                 return "Ship Placement out of bounds";
@@ -220,9 +256,16 @@ public class BattleshipModel {
                 Coordinate toAdd = new Coordinate( Across, Down + i);
                 playerShipPoints.add(toAdd);
             }
-            getShip(shipName).setLocation(start, end);
-            myShips[shipPlaceIndex] = getShip(shipName);
-            shipPlaceIndex++;
+            if(shipName.equals("aircraftCarrier") || shipName.equals("battleship") || shipName.equals("submarine")){
+                getShip(shipName).setLocation(start, end);
+                playerMilitaryShips[militaryPlaceIndex] = (MilitaryShip) getShip(shipName);
+                militaryPlaceIndex++;
+            }
+            else{
+                getShip(shipName).setLocation(start, end);
+                playerCivilianShips[civilianPlaceIndex] = (CivilianShip) getShip(shipName);
+                civilianPlaceIndex++;
+            }
         }
 
         return null;
@@ -245,10 +288,43 @@ public class BattleshipModel {
         Coordinate coor = new Coordinate(row,col);
 
         boolean hit = false;
-        for(int i = 0; i < 5; i++){
-            if(enemyShips[i].covers(coor)){
-                computerHits.add(coor);
-                hit = true;
+
+
+        for(int i = 0; i < 3; i++){
+            if(enemyMilitaryShips[i].covers(coor)){
+                if(!enemyMilitaryShips[i].isSunk()) {
+                    computerHits.add(coor);
+                    enemyMilitaryShips[i].addHit();
+
+                    if (enemyMilitaryShips[i].isSunk()) {
+                        computerShipsSunk.add(enemyMilitaryShips[i]);
+                    }
+
+                    hit = true;
+
+                }
+            }
+        }
+        for(int i = 0; i < 2; i++){
+            if(enemyCivilianShips[i].covers(coor)){
+                if(!enemyCivilianShips[i].isSunk()) {
+                    computerHits.add(coor);
+                    enemyCivilianShips[i].addHit();
+
+                    if (enemyCivilianShips[i].isSunk()) {
+                        computerShipsSunk.add(enemyCivilianShips[i]);
+                        Coordinate addpoints[] = enemyCivilianShips[i].getPoints();
+                        for(int j = 0; j < addpoints.length; j++){
+                            if(addpoints[j] != coor){
+                                computerHits.add(addpoints[j]);
+                            }
+
+                        }
+
+                    }
+
+                    hit = true;
+                }
             }
         }
         if(!hit){
@@ -272,15 +348,42 @@ public class BattleshipModel {
             System.out.println("Dupe");
         }
         boolean hit = false;
-        for(int i = 0; i < 5; i++){
-            if(myShips[i].covers(coor)){
-                playerHits.add(coor);
-                hit = true;
+        for(int i = 0; i < 3; i++){
+            if(playerMilitaryShips[i].covers(coor)){
+                if(!playerMilitaryShips[i].isSunk()) {
+                    playerHits.add(coor);
+                    playerMilitaryShips[i].addHit();
+
+                    if (playerMilitaryShips[i].isSunk()) {
+                        computerShipsSunk.add(playerMilitaryShips[i]);
+                    }
+
+                    hit = true;
+                }
+            }
+        }
+        for(int i = 0; i < 2; i++){
+            if(playerCivilianShips[i].covers(coor)){
+                if(!playerCivilianShips[i].isSunk()) {
+                    playerHits.add(coor);
+                    playerCivilianShips[i].addHit();
+
+                    if (playerCivilianShips[i].isSunk()) {
+                        computerShipsSunk.add(playerCivilianShips[i]);
+                    }
+
+                    hit = true;
+                }
             }
         }
         if(!hit){
             playerMisses.add(coor);
         }
+    }
+
+    public boolean getScanResult(){
+
+        return this.scanResult;
     }
 
     public void scan(int row, int col){
@@ -290,6 +393,7 @@ public class BattleshipModel {
         Coordinate down = new Coordinate(row+1, col);
         Coordinate left = new Coordinate(row, col-1);
         Coordinate right = new Coordinate(row, col+1);
+
         ArrayList<Coordinate> coords = new ArrayList<Coordinate>();
         Ship shipToCheck;
 
@@ -307,16 +411,6 @@ public class BattleshipModel {
                 scanResult = true;
         }
 
-/*
-        if(
-                getShipFromCoordinate(scanCoord) != null
-                    || getShipFromCoordinate(up) != null
-                    || getShipFromCoordinate(down) != null
-                    || getShipFromCoordinate(left) != null
-                    || getShipFromCoordinate(right)!= null){
-                scanResult = true;
-        }
-*/
 
     }
 
@@ -324,8 +418,13 @@ public class BattleshipModel {
     //null otherwise
     private Ship getShipFromCoordinate(Coordinate c){
         for(int i = 0; i < 5; i++){
-            if(enemyShips[i].containsPoint(c)){
-                return enemyShips[i];
+            if(enemyMilitaryShips[i].containsPoint(c)){
+                return enemyMilitaryShips[i];
+            }
+        }
+        for(int i = 0; i < 5; i++){
+            if(enemyCivilianShips[i].containsPoint(c)){
+                return enemyCivilianShips[i];
             }
         }
         return null;

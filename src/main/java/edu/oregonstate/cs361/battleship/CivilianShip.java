@@ -8,11 +8,11 @@ public class CivilianShip extends Ship {
             super(n,l,s,e,stealth);
         }
 
-        public void checkIfSunk() {
-            int shipHits = returnCounter();
-            if (counter > 0)
-                isSunk(true);
+        public boolean isSunk() {
+
+            if (hitCounter > 0)
+                return true;
             else
-                isSunk(false);
+                return false;
         }
 }
