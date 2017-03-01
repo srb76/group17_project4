@@ -108,6 +108,7 @@ if(selectedID != null)
 var selected_row = parseInt(document.getElementById('fireRowLabel').innerHTML);
 var selected_col = parseInt(document.getElementById('fireColLabel').innerHTML);
 
+
 var request = $.ajax({
      url: "/scan/"+selected_row+"/"+selected_col,
      method: "post",
@@ -116,6 +117,7 @@ var request = $.ajax({
      dataType: "json"
    });
     request.done(function( currModel ) {
+
         if(currModel.scanResult)
             var message = "Scan Found a Ship!";
         else
@@ -126,6 +128,9 @@ var request = $.ajax({
      displayMessage(message);
    });
 
+ request.fail(function( jqXHR, textStatus ) {
+     alert( "Error in Scan");
+   });
 
 
 
@@ -160,14 +165,14 @@ if(selectedID != null)
     document.getElementById("computerScore").innerHTML = gameModel.playerHits.length;
 
     //Check for player victory
-    if(gameModel.computerHits.length == 14)
+    if(gameModel.computerShipsSunk.length == 5)
     {
         document.getElementById("endGame").style.display = "block";
         document.getElementById("victory").style.display = "block";
     }
 
     //Check for AI victory
-    if(gameModel.playerHits.length == 14)
+    if(gameModel.playerShipsSunk.length == 5)
     {
         document.getElementById("endGame").style.display = "block";
         document.getElementById("defeat").style.display = "block";
@@ -242,6 +247,10 @@ displayEnemyShip(gameModel.computer_clipper);
 displayEnemyShip(gameModel.computer_dinghy);
 displayEnemyShip(gameModel.computer_submarine);
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 1dde5410b17b748efae15bcdafa4219d369b160f
 
 //Now checks element ending with "_ai"
 for (var i = 0; i < gameModel.computerMisses.length; i++) {
@@ -344,7 +353,7 @@ function cellFireClick(id){
         var col = nums[1];
         document.getElementById('fireRowLabel').innerHTML = row;
         document.getElementById('fireColLabel').innerHTML = col;
-        document.getElementById('fireColLabel').innerHTML = col;displayShip
+        document.getElementById('fireColLabel').innerHTML = col;
      }
 
 }
@@ -361,10 +370,12 @@ function getShipLength(){
         return 5;
     else if(ship == "battleship")
         return 4;
-    else if(ship == "cruiser")
+    else if(ship == "clipper")
         return 3;
-    else
+    else if(ship == "submarine")
         return 2;
+    else
+        return 1;
 
 }
 function getOrientation(){
@@ -380,6 +391,8 @@ function displayShip(ship){
  startCoordDown = ship.start.Down;
  endCoordAcross = ship.end.Across;
  endCoordDown = ship.end.Down;
+
+    console.log(startCoordAcross + " " + startCoordDown + " " + endCoordAcross + " "+ endCoordDown + " ")
 
  if(startCoordAcross > 0){
     if(startCoordAcross == endCoordAcross){
