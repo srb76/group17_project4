@@ -2,17 +2,26 @@ var gameModel;
 var selectedID = null;
 var selectedFireClass = null;
 var ships_placed = false;
-$( document ).ready(function() {
+$( document ).ready(getModel());
+
+function getModel () {
   // Handler for .ready() called.
   $.getJSON("model", function( json ) {
   gameModel = json;
+  displayGameState(gameModel);
   disableButton('scanButton');
   disableButton('fireButton');
   disableButton('placeShipButton');
     //console.log( "JSON Data: " + json );
     displayMessage("Please place all of your ships by selecting the cell you would like to place the ship at and selecting the orientation of the ship. Then click the place button.");
    });
-});
+ }
+
+ //resets the game when the user presses the reset button by reloading the page.
+ function resetGame(){
+    location.reload();
+ }
+
 
 function placeShip() {
     for(var i=1; i < 11; i++){
