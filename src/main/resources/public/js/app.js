@@ -247,10 +247,7 @@ displayEnemyShip(gameModel.computer_clipper);
 displayEnemyShip(gameModel.computer_dinghy);
 displayEnemyShip(gameModel.computer_submarine);
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 1dde5410b17b748efae15bcdafa4219d369b160f
 
 //Now checks element ending with "_ai"
 for (var i = 0; i < gameModel.computerMisses.length; i++) {
