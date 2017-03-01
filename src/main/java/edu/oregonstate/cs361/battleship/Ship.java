@@ -3,15 +3,17 @@ package edu.oregonstate.cs361.battleship;
 /**
  * Created by michaelhilton on 1/5/17.
  */
-public class Ship {
+abstract public class Ship {
     private String name;
     protected int length;
     private Coordinate start;
     private Coordinate end;
     private Coordinate[] myPoints;
     private boolean visibility;
-    private boolean shipSunk;
+    protected boolean shipSunk;
     protected int counter = 0;
+
+    public boolean isSunk(){return shipSunk;};
 
     public Ship(String n, int l,Coordinate s, Coordinate e, boolean stealth) {
         name = n;
@@ -19,13 +21,21 @@ public class Ship {
         start = s;
         end = e;
         visibility = stealth;
+        shipSunk = false;
     }
+
+    String getName(){
+        return name;
+    }
+
     void addHit(){
         counter++;
     }
+
     public int returnCounter(){
         return counter;
     }
+
     public Ship(String n, int l) {
         name = n;
         length = l;

@@ -79,7 +79,6 @@ function placeShip() {
      else{
         document.getElementById(id).checked = true;
      }
-
      displayGameState(currModel);
      gameModel = currModel;
 
@@ -154,6 +153,7 @@ if(selectedID != null)
      displayGameState(currModel);
      gameModel = currModel;
      parseGameModel(gameModel);
+     console.log(gameModel);
    });
     function parseGameModel(gameModel){
     document.getElementById("playerScore").innerHTML = gameModel.computerHits.length;
@@ -231,17 +231,17 @@ disableButton('fireButton');
 
 displayShip(gameModel.aircraftCarrier);
 displayShip(gameModel.battleship);
-displayShip(gameModel.cruiser);
-displayShip(gameModel.destroyer);
+displayShip(gameModel.clipper);
+displayShip(gameModel.dinghy);
 displayShip(gameModel.submarine);
 
-/*
+
 displayEnemyShip(gameModel.computer_aircraftCarrier);
 displayEnemyShip(gameModel.computer_battleship);
-displayEnemyShip(gameModel.computer_cruiser);
-displayEnemyShip(gameModel.computer_destroyer);
+displayEnemyShip(gameModel.computer_clipper);
+displayEnemyShip(gameModel.computer_dinghy);
 displayEnemyShip(gameModel.computer_submarine);
-*/
+
 
 //Now checks element ending with "_ai"
 for (var i = 0; i < gameModel.computerMisses.length; i++) {

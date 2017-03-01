@@ -1,26 +1,24 @@
 package edu.oregonstate.cs361.battleship;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
  * Created by michaelhilton on 1/4/17.
  */
 public class BattleshipModel {
-    private Ship aircraftCarrier = new Ship("AircraftCarrier",5, new Coordinate(0,0),new Coordinate(0,0),false);
-    private Ship battleship = new Ship("Battleship",4, new Coordinate(0,0),new Coordinate(0,0),true);
-    private Ship cruiser = new Ship("Cruiser",3, new Coordinate(0,0),new Coordinate(0,0),true);
-    private Ship destroyer = new Ship("Destroyer",2, new Coordinate(0,0),new Coordinate(0,0),true);
-    private Ship submarine = new Ship("Submarine",2, new Coordinate(0,0),new Coordinate(0,0),true);
+    private Ship aircraftCarrier = new MilitaryShip("AircraftCarrier",5, new Coordinate(0,0),new Coordinate(0,0),false);
+    private Ship battleship = new MilitaryShip("Battleship",4, new Coordinate(0,0),new Coordinate(0,0),true);
+    private Ship clipper = new CivilianShip("Clipper",3, new Coordinate(0,0),new Coordinate(0,0),false);
+    private Ship dinghy = new CivilianShip("Dinghy",1, new Coordinate(0,0),new Coordinate(0,0),false);
+    private Ship submarine = new MilitaryShip("Submarine",2, new Coordinate(0,0),new Coordinate(0,0),true);
 
 
 
     private Ship computer_aircraftCarrier;
     private Ship computer_battleship;
-    private Ship computer_cruiser;
-    private Ship computer_destroyer;
+    private Ship computer_clipper;
+    private Ship computer_dinghy;
     private Ship computer_submarine;
 
     private Ship[] myShips;
@@ -34,6 +32,9 @@ public class BattleshipModel {
     private ArrayList<Coordinate> playerShipPoints;
     private ArrayList<Coordinate> computerShipPoints;
     private boolean scanResult;
+    // will be used to store the names of sunk ships.
+    private String mySunkShips;
+    private String enemySunkShips;
 
     public BattleshipModel() {
         playerHits = new ArrayList<>();
@@ -44,18 +45,25 @@ public class BattleshipModel {
         computerShipPoints = new ArrayList<>();
         myShips = new Ship[5];
         enemyShips = new Ship[5];
-
-        computer_aircraftCarrier = placeEnemyShip("computer_aircraftCarrier", 5);
-        computer_battleship = placeEnemyShip("Computer_Battleship",4);
-        computer_cruiser = placeEnemyShip("Computer_Cruiser",3);
-        computer_destroyer = placeEnemyShip("Computer_Destroyer",2);
-        computer_submarine = placeEnemyShip("Computer_Submarine",2);
+        mySunkShips = new String();
+        mySunkShips = null;
+        enemySunkShips = new String();
+        enemySunkShips = null;
+        computer_aircraftCarrier = placeEnemyShip("computer_aircraftCarrier", 5, "MilitaryShip");
+        computer_battleship = placeEnemyShip("Computer_Battleship",4, "MilitaryShip");
+        computer_clipper = placeEnemyShip("Computer_Clipper",3, "CivilianShip");
+        computer_dinghy = placeEnemyShip("Computer_Dinghy",1, "CivilianShip");
+        computer_submarine = placeEnemyShip("Computer_Submarine",2, "MilitaryShip");
         enemyShips[0] = computer_aircraftCarrier;
         enemyShips[1] = computer_battleship;
-        enemyShips[2] = computer_cruiser;
-        enemyShips[3] = computer_destroyer;
+        enemyShips[2] = computer_clipper;
+        enemyShips[3] = computer_dinghy;
         enemyShips[4] = computer_submarine;
-
+        myShips[0] = aircraftCarrier;
+        myShips[1] = battleship;
+        myShips[2] = clipper;
+        myShips[3] = dinghy;
+        myShips[4] = submarine;
         scanResult = false;
     }
 
@@ -69,10 +77,10 @@ public class BattleshipModel {
             return aircraftCarrier;
         } if(shipName.equalsIgnoreCase("battleship")) {
             return battleship;
-        } if(shipName.equalsIgnoreCase("Cruiser")) {
-        return cruiser;
-        } if(shipName.equalsIgnoreCase("destroyer")) {
-            return destroyer;
+        } if(shipName.equalsIgnoreCase("Clipper")) {
+        return clipper;
+        } if(shipName.equalsIgnoreCase("dinghy")) {
+            return dinghy;
         }if(shipName.equalsIgnoreCase("submarine")) {
             return submarine;
         } else {
@@ -80,7 +88,7 @@ public class BattleshipModel {
         }
     }
 
-    public Ship placeEnemyShip(String name, int length){
+    public Ship placeEnemyShip(String name, int length, String type){
 
         boolean valid = false;
         boolean visibleShip = true;
@@ -123,14 +131,15 @@ public class BattleshipModel {
                 computerShipPoints.add(myPoints[i]);
             }
         }
-
+        Ship currentShip;
         //Give stealth to Computer_Battleship and Computer_Submarine
         if(name == "Computer_Battleship" || name == "Computer_Submarine")
             visibleShip = false;
-
-        Ship currentShip = new Ship(name, length, startCoordinate, endCoordinate, visibleShip);
-        currentShip.setPoints(myPoints);
-
+        if(type.equals("MilitaryShip")) {
+            currentShip = new MilitaryShip(name, length, startCoordinate, endCoordinate, visibleShip);
+        } else { //(is CivlianShip
+            currentShip = new CivilianShip(name, length, startCoordinate, endCoordinate, visibleShip);
+        }
             return currentShip;
     }
 
@@ -182,7 +191,7 @@ public class BattleshipModel {
         int endDown;
         int endAcross;
         size = getShip(shipName).getLength();
-        Ship testShip = new Ship("test", size);
+        MilitaryShip testShip;
         if(orientation.equals("vertical")){
             endDown = Down;
             endAcross = Across + size - 1;
@@ -190,8 +199,10 @@ public class BattleshipModel {
                 return "Ship Placement out of bounds";
             Coordinate start = new Coordinate(Across, Down);
             Coordinate end = new Coordinate(endAcross, endDown);
-            testShip.setLocation(start, end);
+            System.out.println("setting up test ship");
+            testShip = new MilitaryShip("test", size, start, end, false);
             for(int i = 0; i < playerShipPoints.size(); i++){
+                System.out.println("using test ship");
                 if(testShip.covers(playerShipPoints.get(i)))
                     return "Placement overlaps another ship";
             }
@@ -211,7 +222,7 @@ public class BattleshipModel {
                 return "Ship placement out of bounds";
             Coordinate start = new Coordinate(Across, Down);
             Coordinate end = new Coordinate(endAcross, endDown);
-            testShip.setLocation(start, end);
+            testShip = new MilitaryShip("test", size, start, end, false);
             for(int i = 0; i < playerShipPoints.size(); i++){
                 if(testShip.covers(playerShipPoints.get(i)))
                     return "Placement overlaps another ship";
@@ -230,7 +241,7 @@ public class BattleshipModel {
 
     public String shootAtComputer(int row, int col) {
 
-
+        enemySunkShips = null;
         //Note: Reversed order for checking computerHits and computerMisses
         if(row > 10 || col > 10)
             return "That Shot is off the board!";
@@ -249,6 +260,11 @@ public class BattleshipModel {
             if(enemyShips[i].covers(coor)){
                 computerHits.add(coor);
                 hit = true;
+                enemyShips[i].addHit();
+                if(enemyShips[i].isSunk()){
+                    enemySunkShips = new String(enemyShips[i].getName());
+                    System.out.println("SunkShips: " + enemySunkShips);
+                }
             }
         }
         if(!hit){
@@ -259,6 +275,7 @@ public class BattleshipModel {
     }
 
     public void shootAtPlayer() {
+        mySunkShips = null;
         double randomRow = Math.random() * 10 + 1;
         double randomCol = Math.random() * 10 + 1;
         int max = 10;
@@ -276,6 +293,12 @@ public class BattleshipModel {
             if(myShips[i].covers(coor)){
                 playerHits.add(coor);
                 hit = true;
+                myShips[i].addHit();
+                CivilianShip test;
+                test = (CivilianShip) myShips[i];
+                if(myShips[i].isSunk()){
+                    mySunkShips = myShips[i].getName();
+                }
             }
         }
         if(!hit){
@@ -330,7 +353,6 @@ public class BattleshipModel {
         }
         return null;
     }
-
 
 
 }//end class
