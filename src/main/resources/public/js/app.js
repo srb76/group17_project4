@@ -156,14 +156,14 @@ if(selectedID != null)
     document.getElementById("computerScore").innerHTML = gameModel.playerHits.length;
 
     //Check for player victory
-    if(gameModel.computerHits.length == 14)
+    if(gameModel.computerShipsSunk.length == 5)
     {
         document.getElementById("endGame").style.display = "block";
         document.getElementById("victory").style.display = "block";
     }
 
     //Check for AI victory
-    if(gameModel.playerHits.length == 14)
+    if(gameModel.playerShipsSunk.length == 5)
     {
         document.getElementById("endGame").style.display = "block";
         document.getElementById("defeat").style.display = "block";
@@ -227,17 +227,17 @@ disableButton('fireButton');
 
 displayShip(gameModel.aircraftCarrier);
 displayShip(gameModel.battleship);
-displayShip(gameModel.cruiser);
-displayShip(gameModel.destroyer);
+displayShip(gameModel.clipper);
+displayShip(gameModel.dinghy);
 displayShip(gameModel.submarine);
 
-/*
+
 displayEnemyShip(gameModel.computer_aircraftCarrier);
 displayEnemyShip(gameModel.computer_battleship);
-displayEnemyShip(gameModel.computer_cruiser);
-displayEnemyShip(gameModel.computer_destroyer);
+displayEnemyShip(gameModel.computer_clipper);
+displayEnemyShip(gameModel.computer_dinghy);
 displayEnemyShip(gameModel.computer_submarine);
-*/
+
 
 
 //Now checks element ending with "_ai"
@@ -341,7 +341,7 @@ function cellFireClick(id){
         var col = nums[1];
         document.getElementById('fireRowLabel').innerHTML = row;
         document.getElementById('fireColLabel').innerHTML = col;
-        document.getElementById('fireColLabel').innerHTML = col;displayShip
+        document.getElementById('fireColLabel').innerHTML = col;
      }
 
 }
@@ -358,10 +358,12 @@ function getShipLength(){
         return 5;
     else if(ship == "battleship")
         return 4;
-    else if(ship == "cruiser")
+    else if(ship == "clipper")
         return 3;
-    else
+    else if(ship == "submarine")
         return 2;
+    else
+        return 1;
 
 }
 function getOrientation(){
@@ -377,6 +379,8 @@ function displayShip(ship){
  startCoordDown = ship.start.Down;
  endCoordAcross = ship.end.Across;
  endCoordDown = ship.end.Down;
+
+    console.log(startCoordAcross + " " + startCoordDown + " " + endCoordAcross + " "+ endCoordDown + " ")
 
  if(startCoordAcross > 0){
     if(startCoordAcross == endCoordAcross){
