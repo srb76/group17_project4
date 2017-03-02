@@ -44,8 +44,8 @@ public class BattleshipModel {
     private ArrayList<Coordinate> computerShipPoints;
     private boolean scanResult;
     // will be used to store the names of sunk ships.
-    private String mySunkShips;
-    private String enemySunkShips;
+    private String mySunkShip;
+    private String enemySunkShip;
 
     public BattleshipModel() {
         playerHits = new ArrayList<>();
@@ -75,6 +75,9 @@ public class BattleshipModel {
         enemyMilitaryShips[2] = (computer_submarine);
         enemyCivilianShips[0] = (computer_clipper);
         enemyCivilianShips[1] = (computer_dinghy);
+
+        mySunkShip = null;
+        enemySunkShip = null;
 
         scanResult = false;
     }
@@ -275,7 +278,7 @@ public class BattleshipModel {
 
     public String shootAtComputer(int row, int col) {
 
-        enemySunkShips = null;
+        enemySunkShip = null;
         //Note: Reversed order for checking computerHits and computerMisses
         if(row > 10 || col > 10)
             return "That Shot is off the board!";
@@ -299,6 +302,7 @@ public class BattleshipModel {
 
                     if (enemyMilitaryShips[i].isSunk()) {
                         computerShipsSunk.add(enemyMilitaryShips[i]);
+                        enemySunkShip = enemyMilitaryShips[i].getName();
                     }
 
                     hit = true;
@@ -314,6 +318,7 @@ public class BattleshipModel {
 
                     if (enemyCivilianShips[i].isSunk()) {
                         computerShipsSunk.add(enemyCivilianShips[i]);
+                        enemySunkShip = enemyCivilianShips[i].getName();
                         Coordinate addpoints[] = enemyCivilianShips[i].getPoints();
                         for(int j = 0; j < addpoints.length; j++){
                             if(addpoints[j] != coor){
@@ -336,7 +341,7 @@ public class BattleshipModel {
     }
 
     public void shootAtPlayer() {
-        mySunkShips = null;
+        mySunkShip = null;
         double randomRow = Math.random() * 10 + 1;
         double randomCol = Math.random() * 10 + 1;
         int max = 10;
@@ -358,6 +363,7 @@ public class BattleshipModel {
 
                     if (playerMilitaryShips[i].isSunk()) {
                         computerShipsSunk.add(playerMilitaryShips[i]);
+                        mySunkShip = playerMilitaryShips[i].getName();
                     }
 
                     hit = true;
@@ -372,6 +378,7 @@ public class BattleshipModel {
 
                     if (playerCivilianShips[i].isSunk()) {
                         computerShipsSunk.add(playerCivilianShips[i]);
+                        mySunkShip = playerCivilianShips[i].getName();
                     }
 
                     hit = true;
@@ -409,8 +416,9 @@ public class BattleshipModel {
         for(Coordinate coord : coords)
         {
             shipToCheck = getShipFromCoordinate(coord);
-            if (shipToCheck != null && shipToCheck.isVisible() )
-                scanResult = true;
+            if (shipToCheck != null)
+                if(shipToCheck.isVisible())
+                    scanResult = true;
         }
 
 
@@ -419,12 +427,12 @@ public class BattleshipModel {
     //this will return the ship object that is on the cooordinate parameter
     //null otherwise
     private Ship getShipFromCoordinate(Coordinate c){
-        for(int i = 0; i < 5; i++){
+        for(int i = 0; i < 3; i++){
             if(enemyMilitaryShips[i].containsPoint(c)){
                 return enemyMilitaryShips[i];
             }
         }
-        for(int i = 0; i < 5; i++){
+        for(int i = 0; i < 2; i++){
             if(enemyCivilianShips[i].containsPoint(c)){
                 return enemyCivilianShips[i];
             }
