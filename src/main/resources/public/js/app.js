@@ -79,7 +79,6 @@ function placeShip() {
      else{
         document.getElementById(id).checked = true;
      }
-
      displayGameState(currModel);
      gameModel = currModel;
 
@@ -159,6 +158,7 @@ if(selectedID != null)
      displayGameState(currModel);
      gameModel = currModel;
      parseGameModel(gameModel);
+     console.log(gameModel);
    });
     function parseGameModel(gameModel){
     document.getElementById("playerScore").innerHTML = gameModel.computerHits.length;

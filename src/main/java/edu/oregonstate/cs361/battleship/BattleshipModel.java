@@ -1,14 +1,13 @@
 package edu.oregonstate.cs361.battleship;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
  * Created by michaelhilton on 1/4/17.
  */
 public class BattleshipModel {
+
     private MilitaryShip aircraftCarrier = new MilitaryShip("AircraftCarrier",5, new Coordinate(0,0),new Coordinate(0,0),false);
     private MilitaryShip battleship = new MilitaryShip("Battleship",4, new Coordinate(0,0),new Coordinate(0,0),true);
     private MilitaryShip submarine = new MilitaryShip("Submarine",2, new Coordinate(0,0),new Coordinate(0,0),true);
@@ -44,6 +43,9 @@ public class BattleshipModel {
     private ArrayList<Coordinate> playerShipPoints;
     private ArrayList<Coordinate> computerShipPoints;
     private boolean scanResult;
+    // will be used to store the names of sunk ships.
+    private String mySunkShips;
+    private String enemySunkShips;
 
     public BattleshipModel() {
         playerHits = new ArrayList<>();
@@ -52,6 +54,7 @@ public class BattleshipModel {
         computerMisses= new ArrayList<>();
         playerShipPoints = new ArrayList<>();
         computerShipPoints = new ArrayList<>();
+
         computerShipsSunk = new ArrayList<>();
         playerShipsSunk = new ArrayList<>();
 
@@ -97,6 +100,7 @@ public class BattleshipModel {
         }
     }
 
+
     public Ship placeEnemyShip(String name, int length, int place_index){
 
         boolean valid = false;
@@ -140,13 +144,10 @@ public class BattleshipModel {
                 computerShipPoints.add(myPoints[i]);
             }
         }
-
+        Ship currentShip;
         //Give stealth to Computer_Battleship and Computer_Submarine
         if(name == "Computer_Battleship" || name == "Computer_Submarine")
             visibleShip = false;
-
-
-        Ship currentShip;
         if(name == "Computer_Battleship" || name == "Computer_Submarine" || name == "Computer_AircraftCarrier"){
 
             currentShip = new MilitaryShip(name, length, startCoordinate, endCoordinate, visibleShip);
@@ -210,7 +211,7 @@ public class BattleshipModel {
         int endDown;
         int endAcross;
         size = getShip(shipName).getLength();
-        Ship testShip = new Ship("test", size);
+        MilitaryShip testShip;
         if(orientation.equals("vertical")){
             endDown = Down;
             endAcross = Across + size - 1;
@@ -218,8 +219,9 @@ public class BattleshipModel {
                 return "Ship Placement out of bounds";
             Coordinate start = new Coordinate(Across, Down);
             Coordinate end = new Coordinate(endAcross, endDown);
-            testShip.setLocation(start, end);
+            testShip = new MilitaryShip("test", size, start, end, false);
             for(int i = 0; i < playerShipPoints.size(); i++){
+                System.out.println("using test ship");
                 if(testShip.covers(playerShipPoints.get(i)))
                     return "Placement overlaps another ship";
             }
@@ -247,7 +249,7 @@ public class BattleshipModel {
                 return "Ship placement out of bounds";
             Coordinate start = new Coordinate(Across, Down);
             Coordinate end = new Coordinate(endAcross, endDown);
-            testShip.setLocation(start, end);
+            testShip = new MilitaryShip("test", size, start, end, false);
             for(int i = 0; i < playerShipPoints.size(); i++){
                 if(testShip.covers(playerShipPoints.get(i)))
                     return "Placement overlaps another ship";
@@ -273,7 +275,7 @@ public class BattleshipModel {
 
     public String shootAtComputer(int row, int col) {
 
-
+        enemySunkShips = null;
         //Note: Reversed order for checking computerHits and computerMisses
         if(row > 10 || col > 10)
             return "That Shot is off the board!";
@@ -288,7 +290,6 @@ public class BattleshipModel {
         Coordinate coor = new Coordinate(row,col);
 
         boolean hit = false;
-
 
         for(int i = 0; i < 3; i++){
             if(enemyMilitaryShips[i].covers(coor)){
@@ -335,6 +336,7 @@ public class BattleshipModel {
     }
 
     public void shootAtPlayer() {
+        mySunkShips = null;
         double randomRow = Math.random() * 10 + 1;
         double randomCol = Math.random() * 10 + 1;
         int max = 10;
@@ -429,7 +431,6 @@ public class BattleshipModel {
         }
         return null;
     }
-
 
 
 }//end class
