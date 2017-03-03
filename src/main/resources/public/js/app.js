@@ -168,8 +168,8 @@ if(selectedID != null)
      }
    });
     function parseGameModel(gameModel){
-    document.getElementById("playerScore").innerHTML = gameModel.computerHits.length;
-    document.getElementById("computerScore").innerHTML = gameModel.playerHits.length;
+    document.getElementById("playerScore").innerHTML = gameModel.computerShipsSunk.length;
+    document.getElementById("computerScore").innerHTML = gameModel.playerShipsSunk.length;
 
     //Check for player victory
     if(gameModel.computerShipsSunk.length == 5)
