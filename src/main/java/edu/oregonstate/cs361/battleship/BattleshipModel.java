@@ -228,18 +228,22 @@ public class BattleshipModel {
                 if(testShip.covers(playerShipPoints.get(i)))
                     return "Placement overlaps another ship";
             }
+            Coordinate[] myPoints = new Coordinate[size];
             for(int i = 0; i < size; i++){
                 Coordinate toAdd = new Coordinate(Across + i, Down);
                 playerShipPoints.add(toAdd);
+                myPoints[i] = toAdd;
             }
             getShip(shipName).setLocation(start, end);
             if(shipName.equals("aircraftCarrier") || shipName.equals("battleship") || shipName.equals("submarine")){
                 getShip(shipName).setLocation(start, end);
+                getShip(shipName).setPoints(myPoints);
                 playerMilitaryShips[militaryPlaceIndex] = (MilitaryShip) getShip(shipName);
                 militaryPlaceIndex++;
             }
             else{
                 getShip(shipName).setLocation(start, end);
+                getShip(shipName).setPoints(myPoints);
                 playerCivilianShips[civilianPlaceIndex] = (CivilianShip) getShip(shipName);
                 civilianPlaceIndex++;
             }
@@ -257,17 +261,21 @@ public class BattleshipModel {
                 if(testShip.covers(playerShipPoints.get(i)))
                     return "Placement overlaps another ship";
             }
+            Coordinate[] myPoints = new Coordinate[size];
             for(int i = 0; i < size; i++){
                 Coordinate toAdd = new Coordinate( Across, Down + i);
                 playerShipPoints.add(toAdd);
+                myPoints[i] = toAdd;
             }
             if(shipName.equals("aircraftCarrier") || shipName.equals("battleship") || shipName.equals("submarine")){
                 getShip(shipName).setLocation(start, end);
+                getShip(shipName).setPoints(myPoints);
                 playerMilitaryShips[militaryPlaceIndex] = (MilitaryShip) getShip(shipName);
                 militaryPlaceIndex++;
             }
             else{
                 getShip(shipName).setLocation(start, end);
+                getShip(shipName).setPoints(myPoints);
                 playerCivilianShips[civilianPlaceIndex] = (CivilianShip) getShip(shipName);
                 civilianPlaceIndex++;
             }
@@ -321,7 +329,8 @@ public class BattleshipModel {
                         enemySunkShip = enemyCivilianShips[i].getName();
                         Coordinate addpoints[] = enemyCivilianShips[i].getPoints();
                         for(int j = 0; j < addpoints.length; j++){
-                            if(addpoints[j] != coor){
+
+                            if(addpoints[j].equals(coor) == false){
                                 computerHits.add(addpoints[j]);
                             }
 
@@ -340,20 +349,47 @@ public class BattleshipModel {
 
     }
 
-    public void shootAtPlayer() {
-        mySunkShip = null;
-        double randomRow = Math.random() * 10 + 1;
-        double randomCol = Math.random() * 10 + 1;
+    private Coordinate getRandomCoordinate(){
         int max = 10;
         int min = 1;
         Random random = new Random();
         int randRow = random.nextInt(max - min + 1) + min;
         int randCol = random.nextInt(max - min + 1) + min;
+        return new Coordinate(randRow,randCol);
 
-        Coordinate coor = new Coordinate(randRow,randCol);
-        if(playerMisses.contains(coor)){
-            System.out.println("Dupe");
+    }
+
+
+    public void shootAtPlayer() {
+        mySunkShip = null;
+        double randomRow = Math.random() * 10 + 1;
+        double randomCol = Math.random() * 10 + 1;
+
+        Coordinate coor = new Coordinate(1, 1);
+        boolean duplicate = true;
+        while(duplicate){
+            duplicate = false;
+            for(int i = 0; i < playerMisses.size()-1; i++){
+                if(playerMisses.get(i).equals(coor)) {
+                    duplicate = true;
+                }
+
+            }
+            for(int i = 0; i < playerHits.size()-1; i++){
+                if(playerHits.get(i).equals(coor)){
+                    duplicate = true;
+                }
+            }
+            if(!duplicate){
+                break;
+            }
+            else{
+                coor = getRandomCoordinate();
+            }
+
+
         }
+
         boolean hit = false;
         for(int i = 0; i < 3; i++){
             if(playerMilitaryShips[i].covers(coor)){
@@ -362,7 +398,7 @@ public class BattleshipModel {
                     playerMilitaryShips[i].addHit();
 
                     if (playerMilitaryShips[i].isSunk()) {
-                        computerShipsSunk.add(playerMilitaryShips[i]);
+                        playerShipsSunk.add(playerMilitaryShips[i]);
                         mySunkShip = playerMilitaryShips[i].getName();
                     }
 
@@ -377,8 +413,16 @@ public class BattleshipModel {
                     playerCivilianShips[i].addHit();
 
                     if (playerCivilianShips[i].isSunk()) {
-                        computerShipsSunk.add(playerCivilianShips[i]);
+                        playerShipsSunk.add(playerCivilianShips[i]);
                         mySunkShip = playerCivilianShips[i].getName();
+                        Coordinate addpoints[] = playerCivilianShips[i].getPoints();
+                        for(int j = 0; j < addpoints.length; j++){
+
+                            if(addpoints[j].equals(coor) == false){
+                                playerHits.add(addpoints[j]);
+                            }
+
+                        }
                     }
 
                     hit = true;
