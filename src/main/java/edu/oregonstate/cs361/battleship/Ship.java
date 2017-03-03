@@ -10,8 +10,8 @@ public class Ship {
     private Coordinate end;
     private Coordinate[] myPoints;
     private boolean visibility;
-    private boolean shipSunk;
-    protected int counter = 0;
+
+    protected int hitCounter = 0;
 
     public Ship(String n, int l,Coordinate s, Coordinate e, boolean stealth) {
         name = n;
@@ -19,18 +19,40 @@ public class Ship {
         start = s;
         end = e;
         visibility = stealth;
+
     }
+
+    public String getName(){
+
+        return this.name;
+
+    }
+
+    public boolean isSunk(){
+        if (length == hitCounter)
+            return true;
+        else
+            return false;
+    }
+
     void addHit(){
-        counter++;
+        hitCounter++;
     }
     public int returnCounter(){
-        return counter;
+        return hitCounter;
     }
     public Ship(String n, int l) {
         name = n;
         length = l;
     }
 
+    public boolean hasStealth(){
+
+        if(visibility==true)
+                return true;
+        else
+            return false;
+    }
     public void setLocation(Coordinate s, Coordinate e) {
         start = s;
         end = e;
@@ -39,9 +61,7 @@ public class Ship {
     public void setPoints(Coordinate[] points){
         myPoints = points;
     }
-    public void isSunk(boolean sunk){
-        shipSunk = sunk;
-    }
+
 
     //Stealth features
     public void setVisiblity(boolean visible){
