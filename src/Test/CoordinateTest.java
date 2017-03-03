@@ -1,7 +1,7 @@
 /**
  * Created by tnoelcke on 3/1/2017.
  */
-
+package edu.oregonstate.cs361.battleship;
 import edu.oregonstate.cs361.battleship.Coordinate;
 import org.junit.jupiter.api.Test;
 
