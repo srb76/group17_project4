@@ -82,11 +82,6 @@ public class BattleshipModel {
         scanResult = false;
     }
 
-    public static BattleshipModel ofStatus(String statusStr) {
-        System.out.println("STRING");
-        return null;
-    }
-
     public Ship getShip(String shipName) {
         if (shipName.equalsIgnoreCase("aircraftCarrier")) {
             return aircraftCarrier;
