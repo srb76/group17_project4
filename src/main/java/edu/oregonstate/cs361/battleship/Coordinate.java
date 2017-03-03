@@ -28,10 +28,6 @@ public class Coordinate {
         Across = across;
     }
 
-    public void display(){
-        System.out.println("Across: " + Across + " Down: " + Down);
-    }
-
     public boolean equals(Coordinate toTest){
         if((this.Across == toTest.Across) && (this.Down == toTest.Down))
             return true;

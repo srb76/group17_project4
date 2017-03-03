@@ -11,7 +11,10 @@ public class Ship {
     private Coordinate[] myPoints;
     private boolean visibility;
 
+
     protected int hitCounter = 0;
+
+
 
     public Ship(String n, int l,Coordinate s, Coordinate e, boolean stealth) {
         name = n;
@@ -19,13 +22,10 @@ public class Ship {
         start = s;
         end = e;
         visibility = stealth;
-
     }
 
     public String getName(){
-
         return this.name;
-
     }
 
     public boolean isSunk(){
@@ -38,9 +38,11 @@ public class Ship {
     void addHit(){
         hitCounter++;
     }
+
     public int returnCounter(){
         return hitCounter;
     }
+
     public Ship(String n, int l) {
         name = n;
         length = l;

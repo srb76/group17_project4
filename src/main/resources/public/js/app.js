@@ -74,12 +74,11 @@ function placeShip() {
 
 
         document.getElementById(radioID).checked = false;
-        displayMessage("You have placed all your ships! You may now fire on the enemy by selecting the cell you would like to fire at and then click the fire button. You may also scan for enemy ships my selecting the cell you would like to scan. Scan will tell you if it found a ship in the cell you selected and any adjacent cell.");
+        appendMessage("You have placed all your ships! You may now fire on the enemy by selecting the cell you would like to fire at and then click the fire button. You may also scan for enemy ships my selecting the cell you would like to scan. Scan will tell you if it found a ship in the cell you selected and any adjacent cell.");
      }
      else{
         document.getElementById(id).checked = true;
      }
-
      displayGameState(currModel);
      gameModel = currModel;
 
@@ -108,7 +107,8 @@ if(selectedID != null)
         document.getElementById(selectedID).style.border = "1px solid black";
 var selected_row = parseInt(document.getElementById('fireRowLabel').innerHTML);
 var selected_col = parseInt(document.getElementById('fireColLabel').innerHTML);
-
+var message = "You Scaned at (" + selected_row + ", " + selected_col + "):";
+displayMessage(message);
 
 var request = $.ajax({
      url: "/scan/"+selected_row+"/"+selected_col,
@@ -126,11 +126,11 @@ var request = $.ajax({
 
      displayGameState(currModel);
      gameModel = currModel;
-     displayMessage(message);
+     appendMessage(message);
    });
 
  request.fail(function( jqXHR, textStatus ) {
-     alert( "Error in Scan");
+     displayMessage( "Error in Scan");
    });
 
 
@@ -159,6 +159,13 @@ if(selectedID != null)
      displayGameState(currModel);
      gameModel = currModel;
      parseGameModel(gameModel);
+     console.log(gameModel);
+     if(gameModel.mySunkShip){
+        appendMessage("The Computer Sunk your " + gameModel.mySunkShip + ".");
+     }
+     if(gameModel.enemySunkShip){
+        appendMessage("You Sunk the Computers " + gameModel.enemySunkShip + ".");
+     }
    });
     function parseGameModel(gameModel){
     document.getElementById("playerScore").innerHTML = gameModel.computerHits.length;
@@ -240,13 +247,13 @@ displayShip(gameModel.clipper);
 displayShip(gameModel.dinghy);
 displayShip(gameModel.submarine);
 
-
+/*
 displayEnemyShip(gameModel.computer_aircraftCarrier);
 displayEnemyShip(gameModel.computer_battleship);
 displayEnemyShip(gameModel.computer_clipper);
 displayEnemyShip(gameModel.computer_dinghy);
 displayEnemyShip(gameModel.computer_submarine);
-
+*/
 
 
 //Now checks element ending with "_ai"
@@ -359,6 +366,12 @@ function cellFireClick(id){
 function displayMessage(toDisplay){
     var destination = document.getElementById('messageBox');
     destination.innerHTML = toDisplay;
+ }
+
+ function appendMessage(toAppend){
+    var destination = document.getElementById('messageBox');
+    var current = destination.innerHTML;
+    destination.innerHTML = current + " " + toAppend;
  }
 
 function getShipLength(){

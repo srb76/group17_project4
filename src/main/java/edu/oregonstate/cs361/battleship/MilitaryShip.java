@@ -8,5 +8,4 @@ public class MilitaryShip extends Ship{
             super(n, l, s, e, stealth);
         }
 
-
 }
