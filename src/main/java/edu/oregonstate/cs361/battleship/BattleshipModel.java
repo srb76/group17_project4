@@ -360,7 +360,7 @@ public class BattleshipModel {
         double randomRow = Math.random() * 10 + 1;
         double randomCol = Math.random() * 10 + 1;
 
-        Coordinate coor = new Coordinate(1, 1);
+        Coordinate coor =  getRandomCoordinate();
         boolean duplicate = true;
         while(duplicate){
             duplicate = false;
