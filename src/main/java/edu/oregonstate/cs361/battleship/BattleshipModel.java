@@ -256,7 +256,7 @@ public class BattleshipModel {
                 Coordinate toAdd = new Coordinate( Across, Down + i);
                 playerShipPoints.add(toAdd);
             }
-            if(shipName.equals("aircraftCarrier") || shipName.equals("battleship") || shipName.equals("submarine")){
+            if(shipName.equalsIgnoreCase("aircraftCarrier") || shipName.equalsIgnoreCase("battleship") || shipName.equalsIgnoreCase("submarine")){
                 getShip(shipName).setLocation(start, end);
                 playerMilitaryShips[militaryPlaceIndex] = (MilitaryShip) getShip(shipName);
                 militaryPlaceIndex++;

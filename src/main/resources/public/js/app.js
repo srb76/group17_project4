@@ -247,13 +247,13 @@ displayShip(gameModel.clipper);
 displayShip(gameModel.dinghy);
 displayShip(gameModel.submarine);
 
-/*
+
 displayEnemyShip(gameModel.computer_aircraftCarrier);
 displayEnemyShip(gameModel.computer_battleship);
 displayEnemyShip(gameModel.computer_clipper);
 displayEnemyShip(gameModel.computer_dinghy);
 displayEnemyShip(gameModel.computer_submarine);
-*/
+
 
 
 //Now checks element ending with "_ai"
