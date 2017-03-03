@@ -39,10 +39,6 @@ public class Ship {
         hitCounter++;
     }
 
-    public int returnCounter(){
-        return hitCounter;
-    }
-
     public Ship(String n, int l) {
         name = n;
         length = l;
@@ -57,11 +53,6 @@ public class Ship {
         myPoints = points;
     }
 
-
-    //Stealth features
-    public void setVisiblity(boolean visible){
-        visibility = visible;
-    }
 
     public boolean isVisible() {return visibility;}
 
