@@ -54,8 +54,6 @@ public class Ship {
     }
 
 
-    //Stealth features
-
     public boolean isVisible() {return visibility;}
 
     public boolean containsPoint(Coordinate point){
