@@ -357,20 +357,18 @@ public class BattleshipModel {
 
     public void shootAtPlayer() {
         mySunkShip = null;
-        double randomRow = Math.random() * 10 + 1;
-        double randomCol = Math.random() * 10 + 1;
 
         Coordinate coor =  getRandomCoordinate();
         boolean duplicate = true;
         while(duplicate){
             duplicate = false;
-            for(int i = 0; i < playerMisses.size()-1; i++){
+            for(int i = 0; i < playerMisses.size(); i++){
                 if(playerMisses.get(i).equals(coor)) {
                     duplicate = true;
                 }
 
             }
-            for(int i = 0; i < playerHits.size()-1; i++){
+            for(int i = 0; i < playerHits.size(); i++){
                 if(playerHits.get(i).equals(coor)){
                     duplicate = true;
                 }
@@ -383,8 +381,7 @@ public class BattleshipModel {
             }
 
 
-        }
-
+        } 
         boolean hit = false;
         for(int i = 0; i < 3; i++){
             if(playerMilitaryShips[i].covers(coor)){
