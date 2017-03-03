@@ -48,13 +48,6 @@ public class Ship {
         length = l;
     }
 
-    public boolean hasStealth(){
-
-        if(visibility==true)
-                return true;
-        else
-            return false;
-    }
     public void setLocation(Coordinate s, Coordinate e) {
         start = s;
         end = e;

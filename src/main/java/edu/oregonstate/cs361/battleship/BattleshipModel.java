@@ -82,11 +82,6 @@ public class BattleshipModel {
         scanResult = false;
     }
 
-    public static BattleshipModel ofStatus(String statusStr) {
-        System.out.println("STRING");
-        return null;
-    }
-
     public Ship getShip(String shipName) {
         if (shipName.equalsIgnoreCase("aircraftCarrier")) {
             return aircraftCarrier;
@@ -267,7 +262,7 @@ public class BattleshipModel {
                 playerShipPoints.add(toAdd);
                 myPoints[i] = toAdd;
             }
-            if(shipName.equals("aircraftCarrier") || shipName.equals("battleship") || shipName.equals("submarine")){
+            if(shipName.equalsIgnoreCase("aircraftCarrier") || shipName.equalsIgnoreCase("battleship") || shipName.equalsIgnoreCase("submarine")){
                 getShip(shipName).setLocation(start, end);
                 getShip(shipName).setPoints(myPoints);
                 playerMilitaryShips[militaryPlaceIndex] = (MilitaryShip) getShip(shipName);

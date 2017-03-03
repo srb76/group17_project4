@@ -248,6 +248,7 @@ displayShip(gameModel.dinghy);
 displayShip(gameModel.submarine);
 
 
+
 /*
 displayEnemyShip(gameModel.computer_aircraftCarrier);
 displayEnemyShip(gameModel.computer_battleship);
