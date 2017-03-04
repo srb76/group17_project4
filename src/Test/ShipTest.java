@@ -7,6 +7,13 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 public class ShipTest {
     @Test
+    void testGetName(){
+        Ship test = new Ship("test", 0);
+        String name = test.getName();
+        assertEquals("test", name);
+    }
+
+    @Test
     void testIsSunkAndNewShipType(){
         Ship testedNewShip = new Ship("boat",0);
         assertEquals(true, testedNewShip.isSunk());
