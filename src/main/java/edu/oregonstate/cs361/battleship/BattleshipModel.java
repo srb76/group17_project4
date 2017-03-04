@@ -381,7 +381,7 @@ public class BattleshipModel {
             }
 
 
-        } 
+        }
         boolean hit = false;
         for(int i = 0; i < 3; i++){
             if(playerMilitaryShips[i].covers(coor)){
@@ -474,6 +474,16 @@ public class BattleshipModel {
             }
         }
         return null;
+    }
+
+    public ArrayList<Ship> getEnemySunkShips(){
+        return computerShipsSunk;
+    }
+    public MilitaryShip[] getEnemyMilitaryShips(){
+        return this.enemyMilitaryShips;
+    }
+    public CivilianShip[] getEnemyCivilianShips(){
+        return this.enemyCivilianShips;
     }
 
 

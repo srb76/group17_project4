@@ -2,6 +2,8 @@ package edu.oregonstate.cs361.battleship;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.*;
 
 /**
@@ -60,14 +62,60 @@ public class BattleshipModelTest {
         result = model.placeShip("dinghy","5","4","vertical");
         assertNull(result);
 
-        //Places a ship out of bounds
+        //Places a ship out of bounds vertical
         result = model.placeShip("aircraftCarrier","20","20","vertical");
         assertEquals(outBounds,result);
 
-        //Place a ship in bounds with its endpoint out of bounds
+        //Place a ship in bounds with its endpoint out of bounds vertical
         result = model.placeShip("aircraftCarrier","9","9","vertical");
         assertEquals(outBounds,result);
+
+        //Places a ship out of bounds horizontal
+        result = model.placeShip("aircraftCarrier","11","10","horizontal");
+        assertEquals(outBounds,result);
+
+        //Place a ship in bounds with its endpoint out of bounds horizontal
+        result = model.placeShip("aircraftCarrier","10","11","horizontal");
+        assertEquals(outBounds,result);
+
+        //Place a ship in bounds with its endpoint out of bounds horizontal
+        result = model.placeShip("aircraftCarrier","9","20","horizontal");
+        assertEquals(outBounds,result);
     }
+
+    @Test
+    public void overlappingShip(){
+
+        String overlap = "Placement overlaps another ship";
+        String result = model.placeShip("aircraftCarrier","1","1","horizontal");
+        String resultOverlap = model.placeShip("submarine","1","1","horizontal");
+        assertEquals(resultOverlap, overlap);
+
+    }
+
+
+    @Test
+    public void sinkAllEnemyShips(){
+        MilitaryShip[] myMilitary = model.getEnemyMilitaryShips();
+        CivilianShip[] myCivilian = model.getEnemyCivilianShips();
+
+        for(int row = 1; row < 11; row++){
+            for(int col = 1; col < 11; col++){
+                model.shootAtComputer(row, col);
+            }
+
+        }
+
+        ArrayList<Ship> sunkenShips = model.getEnemySunkShips();
+        assertEquals(sunkenShips.contains(myMilitary[0]), true);
+        assertEquals(sunkenShips.contains(myMilitary[1]), true);
+        assertEquals(sunkenShips.contains(myMilitary[2]), true);
+        assertEquals(sunkenShips.contains(myCivilian[0]), true);
+        assertEquals(sunkenShips.contains(myCivilian[1]), true);
+
+
+    }
+
 
     @Test
     public void shootAtComputer() throws Exception {
