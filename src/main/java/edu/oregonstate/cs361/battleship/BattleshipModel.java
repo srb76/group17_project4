@@ -67,11 +67,11 @@ public class BattleshipModel {
         playerCivilianShips = new CivilianShip[2];
 
 
-        computer_aircraftCarrier = (MilitaryShip) placeEnemyShip("Computer_AircraftCarrier", 5, 0);
-        computer_battleship = (MilitaryShip) placeEnemyShip("Computer_Battleship",4, 1);
-        computer_submarine = (MilitaryShip) placeEnemyShip("Computer_Submarine",2, 2);
-        computer_clipper = (CivilianShip) placeEnemyShip("Computer_Clipper",3, 3);
-        computer_dinghy = (CivilianShip) placeEnemyShip("Computer_Dinghy",1, 4);
+        computer_aircraftCarrier = (MilitaryShip) placeEnemyShip("Computer_AircraftCarrier", 5);
+        computer_battleship = (MilitaryShip) placeEnemyShip("Computer_Battleship",4);
+        computer_submarine = (MilitaryShip) placeEnemyShip("Computer_Submarine",2);
+        computer_clipper = (CivilianShip) placeEnemyShip("Computer_Clipper",3);
+        computer_dinghy = (CivilianShip) placeEnemyShip("Computer_Dinghy",1);
 
         enemyMilitaryShips[0] = (computer_aircraftCarrier);
         enemyMilitaryShips[1] = (computer_battleship);
