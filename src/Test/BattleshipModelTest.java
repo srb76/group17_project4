@@ -37,6 +37,12 @@ public class BattleshipModelTest {
     }
 
     @Test
+    public void checkShipOverlap(){
+
+
+    }
+
+    @Test
     public void placeShip() throws Exception {
         String result = "";
         String outBounds = "Ship Placement out of bounds";
@@ -112,6 +118,27 @@ public class BattleshipModelTest {
         assertEquals(sunkenShips.contains(myMilitary[2]), true);
         assertEquals(sunkenShips.contains(myCivilian[0]), true);
         assertEquals(sunkenShips.contains(myCivilian[1]), true);
+
+
+    }
+
+    @Test
+    public void testInBounds(){
+        //fake horizontal aircraft carrier
+        int orientation = 2;
+        int length = 5;
+        Coordinate start = new Coordinate(1, 6);
+        assertEquals(model.pointInBounds(start, orientation, length), true);
+        start = new Coordinate(1, 7);
+        assertEquals(model.pointInBounds(start, orientation, length), false);
+
+        //fake vertical aircraft carrier
+        orientation = 1;
+        length = 5;
+        start = new Coordinate(6, 1);
+        assertEquals(model.pointInBounds(start, orientation, length), true);
+        start = new Coordinate(7, 1);
+        assertEquals(model.pointInBounds(start, orientation, length), false);
 
 
     }
