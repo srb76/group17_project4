@@ -47,6 +47,9 @@ public class BattleshipModel {
     private String mySunkShip;
     private String enemySunkShip;
 
+    //Maximum board size
+    private static final int BOARD_SIZE = 10;
+
     public BattleshipModel() {
         playerHits = new ArrayList<>();
         playerMisses= new ArrayList<>();
@@ -99,7 +102,7 @@ public class BattleshipModel {
     }
 
 
-    public Ship placeEnemyShip(String name, int length, int place_index){
+    public Ship placeEnemyShip(String name, int length){
 
         boolean valid = false;
         boolean visibleShip = true;
@@ -112,8 +115,8 @@ public class BattleshipModel {
             //2 for horizontal
 
             orientation = (Math.random() <= 0.5) ? 1 : 2;
-            row = (int) (Math.random() * 10) + 1;
-            col = (int) (Math.random() * 10) + 1;
+            row = (int) (Math.random() * BOARD_SIZE) + 1;
+            col = (int) (Math.random() * BOARD_SIZE) + 1;
 
             valid = isValidMove(length, row, col, orientation);
 
@@ -167,11 +170,11 @@ public class BattleshipModel {
 
 
         if(orientation == 1){
-            if(row + length >= 10)
+            if(row + length >= BOARD_SIZE)
                 return false;
         }
         else if(orientation == 2){
-            if(col + length >= 10)
+            if(col + length >= BOARD_SIZE)
                 return false;
         }
 
@@ -203,7 +206,7 @@ public class BattleshipModel {
 
         int Across = Integer.parseInt(AcrossS);
         int Down = Integer.parseInt(DownS);
-        if(Down > 10 || Across > 10)
+        if(Down > BOARD_SIZE || Across > BOARD_SIZE)
             return "Ship Placement out of bounds";
         int size;
         int endDown;
@@ -213,7 +216,7 @@ public class BattleshipModel {
         if(orientation.equals("vertical")){
             endDown = Down;
             endAcross = Across + size - 1;
-            if(endAcross > 10)
+            if(endAcross > BOARD_SIZE)
                 return "Ship Placement out of bounds";
             Coordinate start = new Coordinate(Across, Down);
             Coordinate end = new Coordinate(endAcross, endDown);
@@ -243,11 +246,11 @@ public class BattleshipModel {
                 civilianPlaceIndex++;
             }
         } else { //horizantal
-            if((Down + size -1) > 10)
+            if((Down + size -1) > BOARD_SIZE)
                 return "Ship Placement out of bounds";
             endDown = Down + size -1;
             endAcross = Across;
-            if(endDown > 10 )
+            if(endDown > BOARD_SIZE )
                 return "Ship placement out of bounds";
             Coordinate start = new Coordinate(Across, Down);
             Coordinate end = new Coordinate(endAcross, endDown);
@@ -283,7 +286,7 @@ public class BattleshipModel {
 
         enemySunkShip = null;
         //Note: Reversed order for checking computerHits and computerMisses
-        if(row > 10 || col > 10)
+        if(row > BOARD_SIZE || col > BOARD_SIZE)
             return "That Shot is off the board!";
         for(int i = 0; i < computerMisses.size(); i++){
             if(row == computerMisses.get(i).getAcross() && col == computerMisses.get(i).getDown())
@@ -345,7 +348,7 @@ public class BattleshipModel {
     }
 
     private Coordinate getRandomCoordinate(){
-        int max = 10;
+        int max = BOARD_SIZE;
         int min = 1;
         Random random = new Random();
         int randRow = random.nextInt(max - min + 1) + min;
@@ -433,7 +436,6 @@ public class BattleshipModel {
 
     public void scan(int row, int col){
         scanResult = false;
-        Coordinate scanCoord = new Coordinate(row, col);
         Coordinate up = new Coordinate(row-1, col);
         Coordinate down = new Coordinate(row+1, col);
         Coordinate left = new Coordinate(row, col-1);

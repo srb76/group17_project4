@@ -32,7 +32,7 @@ public class BattleshipModelTest {
     @Test
     public void placeEnemyShip() throws Exception {
         //Places enemy battleship
-        currentShip = model.placeEnemyShip("battleship",4,0);
+        currentShip = model.placeEnemyShip("battleship",4);
         assertTrue(currentShip instanceof Ship);
     }
 
