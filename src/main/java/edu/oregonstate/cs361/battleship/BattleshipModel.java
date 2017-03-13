@@ -46,6 +46,9 @@ public class BattleshipModel {
     private String mySunkShip;
     private String enemySunkShip;
 
+    //Maximum board size
+    private static final int BOARD_SIZE = 10;
+
     public BattleshipModel() {
         playerHits = new ArrayList<>();
         playerMisses= new ArrayList<>();
@@ -63,11 +66,11 @@ public class BattleshipModel {
         playerCivilianShips = new CivilianShip[2];
 
 
-        computer_aircraftCarrier = (MilitaryShip) placeEnemyShip("Computer_AircraftCarrier", 5, 0);
-        computer_battleship = (MilitaryShip) placeEnemyShip("Computer_Battleship",4, 1);
-        computer_submarine = (MilitaryShip) placeEnemyShip("Computer_Submarine",2, 2);
-        computer_clipper = (CivilianShip) placeEnemyShip("Computer_Clipper",3, 3);
-        computer_dinghy = (CivilianShip) placeEnemyShip("Computer_Dinghy",1, 4);
+        computer_aircraftCarrier = (MilitaryShip) placeEnemyShip("Computer_AircraftCarrier", 5);
+        computer_battleship = (MilitaryShip) placeEnemyShip("Computer_Battleship",4);
+        computer_submarine = (MilitaryShip) placeEnemyShip("Computer_Submarine",2);
+        computer_clipper = (CivilianShip) placeEnemyShip("Computer_Clipper",3);
+        computer_dinghy = (CivilianShip) placeEnemyShip("Computer_Dinghy",1);
 
         enemyMilitaryShips[0] = (computer_aircraftCarrier);
         enemyMilitaryShips[1] = (computer_battleship);
@@ -99,7 +102,7 @@ public class BattleshipModel {
     }
 
 
-    public Ship placeEnemyShip(String name, int length, int place_index){
+    public Ship placeEnemyShip(String name, int length){
 
         boolean valid = false;
         boolean visibleShip = true;
@@ -107,17 +110,17 @@ public class BattleshipModel {
         int orientation = 0;
         int row = 0;
         int col = 0;
+        Coordinate test;
         while(!valid) {
-            //1 for vertical
-            //2 for horizontal
-
+            //select a random orientation; 1 == vertical; 2 == horizontal
+            //random Coordinate for start point
             orientation = (Math.random() <= 0.5) ? 1 : 2;
-            row = (int) (Math.random() * 10) + 1;
-            col = (int) (Math.random() * 10) + 1;
-
-            valid = isValidMove(length, row, col, orientation);
-
+            row = (int) (Math.random() * BOARD_SIZE) + 1;
+            col = (int) (Math.random() * BOARD_SIZE) + 1;
+            test = new Coordinate(row, col);
+            valid = isValidMove(length, test, orientation);
         }
+
         Coordinate startCoordinate;
         Coordinate endCoordinate;
 
@@ -126,22 +129,15 @@ public class BattleshipModel {
             startCoordinate = new Coordinate(row, col);
             endCoordinate = new Coordinate(row+length-1, col);
         }
-        else { //horizontal change col
+        else { //horizontal, change col
             startCoordinate = new Coordinate(row, col);
             endCoordinate = new Coordinate(row, col+length-1);
         }
 
         Coordinate[] myPoints = new Coordinate[length];
-        for (int i = 0; i < length; i++) {
-            if (orientation == 1) {
-                myPoints[i] = new Coordinate((row+i), (col));
-                computerShipPoints.add(myPoints[i]);
+        myPoints = addPointsToArray(startCoordinate, myPoints, length, orientation);
+        addPointsToArrayList(myPoints, computerShipPoints);
 
-            } else if (orientation == 2) {
-                myPoints[i] = new Coordinate((row), (col+i));
-                computerShipPoints.add(myPoints[i]);
-            }
-        }
         Ship currentShip;
         //Give stealth to Computer_Battleship and Computer_Submarine
         if(name == "Computer_Battleship" || name == "Computer_Submarine")
@@ -161,41 +157,78 @@ public class BattleshipModel {
            return currentShip;
     }
 
-    private boolean isValidMove(int length, int row, int col, int orientation){
+    //This function checks for a point in bounds and if it is not a duplicate point
+    private boolean isValidMove(int length, Coordinate test, int orientation){
         //1 for vertical
         //2 for horizontal
 
-
-        if(orientation == 1){
-            if(row + length >= 10)
-                return false;
-        }
-        else if(orientation == 2){
-            if(col + length >= 10)
-                return false;
+        //check for point out of bounds
+        Coordinate startCoor = test;
+        if(!pointInBounds(startCoor, orientation, length)){
+            return false; //if the point is out of bounds, return false;
         }
 
+        //fill array with valid points and check for overlap
+        Coordinate[] myPoints = new Coordinate[length];
+        myPoints = addPointsToArray(startCoor, myPoints, length, orientation);
+        if(checkForDuplicatePoints(myPoints, computerShipPoints))
+            return false;
+        else {
 
-            Coordinate[] myPoints = new Coordinate[length];
-            for (int i = 0; i < length; i++) {
-                if (orientation == 1) {
-                    myPoints[i] = new Coordinate((row+i), (col));
-                } else if (orientation == 2) {
-                    myPoints[i] = new Coordinate((row), (col+i));
-                }
-                for(int j = 0; j < computerShipPoints.size(); j++){
-                    if((computerShipPoints.get(j).getAcross() == myPoints[i].getAcross()) && (computerShipPoints.get(j).getDown() == myPoints[i].getDown()) ){
+            //if the ship is in bounds and does not overlap, return true
+            return true;
+        }
+    }
 
-                        return false;
-                    }
+    //this checks if there is already a ship at the given point
+    private boolean checkForDuplicatePoints(Coordinate[] testPoints, ArrayList<Coordinate> points){
+        for(int i = 0; i < testPoints.length; i++){
+            for(int j = 0; j < points.size(); j++){
+                if(points.get(j).equals(testPoints[i])){
+                    return true;
                 }
             }
 
+        }
+        return false;
+    }
 
+    //this adds a Coordinate[] of points to an Arraylist
+    private void addPointsToArrayList(Coordinate[] points, ArrayList target){
+        for (int i = 0; i < points.length; i++) {
+            target.add(points[i]);
+        }
+    }
 
+    //this adds a the correct points to a Coordinate[] based on start coordinate, orientation, and length
+    private Coordinate[] addPointsToArray(Coordinate start, Coordinate[] array, int shipLength, int orientation){
+        int across = start.getAcross();
+        int down = start.getDown();
+        for (int i = 0; i < shipLength; i++) {
+            if (orientation == 1) {
+                array[i] = new Coordinate((across+i), (down));
+            } else if (orientation == 2) {
+                array[i] = new Coordinate((across), (down+i));
+            }
+        }
+        return array;
+    }
 
-            return true;
-
+    //this function checks to see if the ship being placed will stay in bounds
+    public boolean pointInBounds(Coordinate c, int orientation, int length){
+        //vertical
+        if(orientation == 1){
+            if(c.getAcross() + length-1 > 10)
+                return false;
+            else
+                return true;
+        }
+        else{//horizontal
+            if(c.getDown() + length-1 > 10)
+                return false;
+            else
+                return true;
+        }
     }
 
 
@@ -203,7 +236,7 @@ public class BattleshipModel {
 
         int Across = Integer.parseInt(AcrossS);
         int Down = Integer.parseInt(DownS);
-        if(Down > 10 || Across > 10)
+        if(Down > BOARD_SIZE || Across > BOARD_SIZE)
             return "Ship Placement out of bounds";
         int size;
         int endDown;
@@ -213,7 +246,7 @@ public class BattleshipModel {
         if(orientation.equals("vertical")){
             endDown = Down;
             endAcross = Across + size - 1;
-            if(endAcross > 10)
+            if(endAcross > BOARD_SIZE)
                 return "Ship Placement out of bounds";
             Coordinate start = new Coordinate(Across, Down);
             Coordinate end = new Coordinate(endAcross, endDown);
@@ -243,11 +276,11 @@ public class BattleshipModel {
                 civilianPlaceIndex++;
             }
         } else { //horizantal
-            if((Down + size -1) > 10)
+            if((Down + size -1) > BOARD_SIZE)
                 return "Ship Placement out of bounds";
             endDown = Down + size -1;
             endAcross = Across;
-            if(endDown > 10 )
+            if(endDown > BOARD_SIZE )
                 return "Ship placement out of bounds";
             Coordinate start = new Coordinate(Across, Down);
             Coordinate end = new Coordinate(endAcross, endDown);
@@ -283,7 +316,7 @@ public class BattleshipModel {
 
         enemySunkShip = null;
         //Note: Reversed order for checking computerHits and computerMisses
-        if(row > 10 || col > 10)
+        if(row > BOARD_SIZE || col > BOARD_SIZE)
             return "That Shot is off the board!";
         for(int i = 0; i < computerMisses.size(); i++){
             if(row == computerMisses.get(i).getAcross() && col == computerMisses.get(i).getDown())
@@ -345,7 +378,7 @@ public class BattleshipModel {
     }
 
     private Coordinate getRandomCoordinate(){
-        int max = 10;
+        int max = BOARD_SIZE;
         int min = 1;
         Random random = new Random();
         int randRow = random.nextInt(max - min + 1) + min;
@@ -433,7 +466,6 @@ public class BattleshipModel {
 
     public void scan(int row, int col){
         scanResult = false;
-        Coordinate scanCoord = new Coordinate(row, col);
         Coordinate up = new Coordinate(row-1, col);
         Coordinate down = new Coordinate(row+1, col);
         Coordinate left = new Coordinate(row, col-1);
