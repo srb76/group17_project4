@@ -183,6 +183,7 @@ public class BattleshipModelTest {
 
     }
 
+
     @Test
     public void smartShootAtPlayer(){
         model = new BattleshipModel();
@@ -195,23 +196,56 @@ public class BattleshipModelTest {
 
         int count = 0;
         boolean clipper = false;
-        while(model.getPlayerSunkShips().size() != 5){
 
+        while(model.getPlayerSunkShips().size() != 5){
             model.smartShootAtPlayer();
-            if(model.getPlayerSunkShips().contains(model.getShip("clipper")) && !clipper){
-                clipper = true;
-                count += 3;
-            }
-            else
-                count++;
-            assertEquals(count, model.getMissArraySize()+ model.getHitArraySize());
+            count++;
         }
         assertEquals(model.getShip("aircraftCarrier").isSunk(), true);
+        assertEquals(count + 2, model.getMissArraySize() + model.getHitArraySize());
 
     }
 
     @Test
-    public void smartShootAtPlayerBattlshipMiddleStart(){
+    public void smartShootAtCivilian(){
+        model = new BattleshipModel();
+        //Places a player ship
+        model.placeShip("battleship","1","8","vertical");
+        model.placeShip("aircraftCarrier","2","1","horizontal");
+        model.placeShip("submarine","3","1","horizontal");
+        model.placeShip("clipper","4","1","horizontal");
+        model.placeShip("dinghy","5","1","horizontal");
+
+        model.shootAtPlayer(4,1);
+        assertEquals(3, model.getHitArraySize());
+        assertEquals(0, model.getMissArraySize());
+        assertEquals(null, model.firstFireHit);
+        model.shootAtPlayer(5,1);
+        assertEquals(4, model.getHitArraySize());
+        assertEquals(0, model.getMissArraySize());
+        assertEquals(null, model.firstFireHit);
+
+        model = new BattleshipModel();
+        //Places a player ship
+        model.placeShip("battleship","1","8","vertical");
+        model.placeShip("aircraftCarrier","2","1","horizontal");
+        model.placeShip("submarine","3","1","horizontal");
+        model.placeShip("clipper","4","1","horizontal");
+        model.placeShip("dinghy","5","1","horizontal");
+
+        model.shootAtPlayer(4,3);
+        assertEquals(3, model.getHitArraySize());
+        assertEquals(0, model.getMissArraySize());
+        assertEquals(null, model.firstFireHit);
+        model.shootAtPlayer(5,1);
+        assertEquals(4, model.getHitArraySize());
+        assertEquals(0, model.getMissArraySize());
+        assertEquals(null, model.firstFireHit);
+
+    }
+
+    @Test
+    public void smartShootAtPlayerBattleshipMiddleStart(){
         model = new BattleshipModel();
         //Places a player ship
         model.placeShip("battleship","1","8","vertical");
@@ -327,6 +361,8 @@ public class BattleshipModelTest {
         model.placeShip("clipper","4","1","horizontal");
         model.placeShip("dinghy","5","1","horizontal");
 
+        model.shootAtPlayer(2,1);
+        assertEquals(1, model.getMissArraySize());
         model.shootAtPlayer(2,3);
         assertEquals(1, model.getHitArraySize());
         assertEquals(2, model.firstFireHit.getAcross());
@@ -338,8 +374,6 @@ public class BattleshipModelTest {
         assertEquals(2, model.lastFired.getDown());
         model.smartShootAtPlayer();
         assertEquals(1, model.getMissArraySize());
-        assertEquals("right", model.fireDirection);
-        model.smartShootAtPlayer();
         assertEquals("right", model.fireDirection);
         assertEquals(3, model.getHitArraySize());
         assertEquals(2, model.lastFired.getAcross());

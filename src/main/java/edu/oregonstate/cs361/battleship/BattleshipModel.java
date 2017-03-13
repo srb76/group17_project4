@@ -461,6 +461,11 @@ public class BattleshipModel {
                             lastFired = firstFireHit;
                         }
                     }
+                    else {
+                        switchDirsFromFirstHit(fireDirection);
+                        test[0] = getNextPoint(lastFired, fireDirection);
+                        Ship military = checkMilitaryHit(test[0]);
+                    }
                 }
                 //if the point was out of bounds, go back to first hit and switch dirs
                 else{
