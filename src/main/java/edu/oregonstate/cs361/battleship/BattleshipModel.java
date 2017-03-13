@@ -47,6 +47,13 @@ public class BattleshipModel {
     private String mySunkShip;
     private String enemySunkShip;
 
+
+    //fields for Smart AI fire
+    private boolean smart_AI_Fire;
+    Coordinate lastFired;
+    Coordinate firstFireHit;
+    String fireDirection;
+
     public BattleshipModel() {
         playerHits = new ArrayList<>();
         playerMisses= new ArrayList<>();
@@ -80,6 +87,11 @@ public class BattleshipModel {
         enemySunkShip = null;
 
         scanResult = false;
+
+        smart_AI_Fire = false;
+        lastFired = null;
+        firstFireHit = null;
+        fireDirection = null;
     }
 
     public Ship getShip(String shipName) {
@@ -163,7 +175,7 @@ public class BattleshipModel {
 
         //check for point out of bounds
         Coordinate startCoor = test;
-        if(!pointInBounds(startCoor, orientation, length)){
+        if(!shipInBounds(startCoor, orientation, length)){
             return false; //if the point is out of bounds, return false;
         }
 
@@ -214,7 +226,7 @@ public class BattleshipModel {
     }
 
     //this function checks to see if the ship being placed will stay in bounds
-    public boolean pointInBounds(Coordinate c, int orientation, int length){
+    public boolean shipInBounds(Coordinate c, int orientation, int length){
         //vertical
         if(orientation == 1){
             if(c.getAcross() + length-1 > 10)
@@ -229,6 +241,7 @@ public class BattleshipModel {
                 return true;
         }
     }
+
 
 
     public String placeShip(String shipName, String AcrossS, String DownS, String orientation) {
@@ -386,82 +399,195 @@ public class BattleshipModel {
 
     }
 
-
-    public void shootAtPlayer() {
+    public void smartShootAtPlayer() {
         mySunkShip = null;
 
-        Coordinate coor =  getRandomCoordinate();
-        boolean duplicate = true;
-        while(duplicate){
-            duplicate = false;
-            for(int i = 0; i < playerMisses.size(); i++){
-                if(playerMisses.get(i).equals(coor)) {
-                    duplicate = true;
-                }
-
-            }
-            for(int i = 0; i < playerHits.size(); i++){
-                if(playerHits.get(i).equals(coor)){
-                    duplicate = true;
-                }
-            }
-            if(!duplicate){
-                break;
-            }
-            else{
-                coor = getRandomCoordinate();
-            }
-
-
+        //last fired will only be set if there was a hit
+        if(firstFireHit == null){
+            shootAtPlayer();
         }
-        boolean hit = false;
-        for(int i = 0; i < 3; i++){
-            if(playerMilitaryShips[i].covers(coor)){
-                if(!playerMilitaryShips[i].isSunk()) {
-                    playerHits.add(coor);
-                    playerMilitaryShips[i].addHit();
+        else {
 
-                    if (playerMilitaryShips[i].isSunk()) {
-                        playerShipsSunk.add(playerMilitaryShips[i]);
-                        mySunkShip = playerMilitaryShips[i].getName();
-                    }
-
-                    hit = true;
-                }
-            }
-        }
-        for(int i = 0; i < 2; i++){
-            if(playerCivilianShips[i].covers(coor)){
-                if(!playerCivilianShips[i].isSunk()) {
-                    playerHits.add(coor);
-                    playerCivilianShips[i].addHit();
-
-                    if (playerCivilianShips[i].isSunk()) {
-                        playerShipsSunk.add(playerCivilianShips[i]);
-                        mySunkShip = playerCivilianShips[i].getName();
-                        Coordinate addpoints[] = playerCivilianShips[i].getPoints();
-                        for(int j = 0; j < addpoints.length; j++){
-
-                            if(addpoints[j].equals(coor) == false){
-                                playerHits.add(addpoints[j]);
+            if(fireDirection == null){
+                //if there is no direction yet found test surrounding coordinates
+                Coordinate surrounding[] = new Coordinate[4];
+                surrounding[0] = new Coordinate(firstFireHit.getAcross(), firstFireHit.getDown() - 1);
+                surrounding[1] = new Coordinate(firstFireHit.getAcross(), firstFireHit.getDown() + 1);
+                surrounding[2] = new Coordinate(firstFireHit.getAcross() - 1, firstFireHit.getDown());
+                surrounding[3] = new Coordinate(firstFireHit.getAcross() + 1, firstFireHit.getDown());
+                //check points in order, if out of bounds, if duplicate, skip.
+                for (int i = 0; i < surrounding.length; i++) {
+                    //check if coordinate is in bounds
+                    Coordinate[] test = new Coordinate[1];
+                    test[0] = surrounding[i];
+                    if (pointInBounds(test[0])) {
+                        //check if coordinate has already been fired at
+                        if (!checkForDuplicatePoints(test, playerMisses) && !checkForDuplicatePoints(test, playerHits)) {
+                            //This point is in bounds, adjacent to the last fired hit, and has not already been fired at
+                            //fire here
+                            Ship civilian = checkCivilianHit(test[0]);
+                            Ship military = checkMilitaryHit(test[0]);
+                            if (civilian == null && military == null) {
+                                playerMisses.add(test[0]);
                             }
-
+                            //set the direction that the computer should take
+                            else{
+                                //unless the ship was sunk
+                                if(!playerShipsSunk.contains(military)) {
+                                    switch (i) {
+                                        case 0:
+                                            fireDirection = "left";
+                                            break;
+                                        case 1:
+                                            fireDirection = "right";
+                                            break;
+                                        case 2:
+                                            fireDirection = "up";
+                                            break;
+                                        case 3:
+                                            fireDirection = "down";
+                                            break;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    }//end if point in bounds
+                }//end for loop
+            }// end if no direction found
+            else {
+                //if direction has been set
+                Coordinate[] test = new Coordinate[1];
+                switch (fireDirection) {
+                    case "up":
+                        test[0] = new Coordinate(lastFired.getAcross()  - 1, lastFired.getDown());
+                        break;
+                    case "down":
+                        test[0] = new Coordinate(lastFired.getAcross() + 1, lastFired.getDown() );
+                        break;
+                    case "left":
+                        test[0] = new Coordinate(lastFired.getAcross(), lastFired.getDown() - 1);
+                        break;
+                    case "right":
+                        test[0] = new Coordinate(lastFired.getAcross(), lastFired.getDown() + 1);
+                        break;
+                }
+                if (pointInBounds(test[0])) {
+                    //check if coordinate has already been fired at
+                    if (!checkForDuplicatePoints(test, playerMisses) && !checkForDuplicatePoints(test, playerHits)) {
+                        //This point is in bounds, adjacent to the last fired hit, and has not already been fired at
+                        //fire here
+                        Ship civilian = checkCivilianHit(test[0]);
+                        Ship military = checkMilitaryHit(test[0]);
+                        if (civilian == null && military == null) {
+                            //if this happens, the ship has reached the end of the ship but has not sunk it yet
+                            //so go back to the first hit and switch directions
+                            playerMisses.add(test[0]);
+                            switch (fireDirection) {
+                                case "up":
+                                    fireDirection = "down";
+                                    break;
+                                case "down":
+                                    fireDirection = "up";
+                                    break;
+                                case "left":
+                                    fireDirection = "right";
+                                    break;
+                                case "right":
+                                    fireDirection = "left";
+                                    break;
+                            }
+                            lastFired = firstFireHit;
                         }
                     }
-
-                    hit = true;
                 }
             }
+
         }
-        if(!hit){
-            playerMisses.add(coor);
+    }
+    public void shootAtPlayer() {
+        mySunkShip = null;
+        Coordinate coor [] = new Coordinate[1];
+        coor[0] =  getRandomCoordinate();
+
+
+        while(checkForDuplicatePoints(coor, playerMisses) || checkForDuplicatePoints(coor, playerHits)){
+                coor[0] = getRandomCoordinate();
         }
+
+        boolean hit = false;
+
+        Ship civilianHit = checkCivilianHit(coor[0]);
+        Ship miliatryHit = checkMilitaryHit(coor[0]);
+
+        if(civilianHit == null && miliatryHit == null)
+            playerMisses.add(coor[0]);
+
     }
 
     public boolean getScanResult(){
 
         return this.scanResult;
     }
+
+    private Ship checkCivilianHit(Coordinate fire){
+        //iterate through the civilianShips
+        for(int i = 0; i < playerCivilianShips.length; i++){
+            //if the coordinate is a civilian ship
+            if(playerCivilianShips[i].covers(fire)){
+                //add a hit to the playerHits
+                playerHits.add(fire);
+                //add a hit to the ship object
+                playerCivilianShips[i].addHit();
+                //sink the civilian ship
+                playerShipsSunk.add(playerCivilianShips[i]);
+                //pass in ship name to sunkShip String for message box
+                mySunkShip = playerCivilianShips[i].getName();
+                //add remaining points to hit to color red on front end
+                Coordinate addpoints[] = playerCivilianShips[i].getPoints();
+                for(int j = 0; j < addpoints.length; j++){
+                    if(addpoints[j].equals(fire) == false){ //do not add the point we added already
+                        playerHits.add(addpoints[j]);
+                    }
+                }
+                return playerCivilianShips[i];
+            }
+        }
+        return null;
+    }
+
+    private Ship checkMilitaryHit(Coordinate fire){
+
+        //iterate through all military ships
+        for(int i = 0; i < playerMilitaryShips.length; i++){
+            //if the coordinate contains a military ship
+            if(playerMilitaryShips[i].covers(fire)){
+                //add hit to playerHits
+                playerHits.add(fire);
+                if(firstFireHit == null)
+                    firstFireHit = fire;
+                else
+                    lastFired = fire;
+                //add hits to ship object
+                playerMilitaryShips[i].addHit();
+
+                //if that was the last hit needed to sink the ship, add ship to sunkships
+                if (playerMilitaryShips[i].isSunk()) {
+                    playerShipsSunk.add(playerMilitaryShips[i]);
+                    //pass in ship name to sunkShip String for message box
+                    mySunkShip = playerMilitaryShips[i].getName();
+                    firstFireHit = null;
+                    lastFired = null;
+                    fireDirection = null;
+                }
+                return playerMilitaryShips[i];
+            }
+
+        }
+        return null;
+    }
+
+
 
     public void scan(int row, int col){
         scanResult = false;
@@ -518,5 +644,12 @@ public class BattleshipModel {
         return this.enemyCivilianShips;
     }
 
+    private boolean pointInBounds(Coordinate c){
+        if(c.getDown() < 1 || c.getDown() > 10)
+            return false;
+        if(c.getAcross() < 1 || c.getAcross() > 10)
+            return false;
+        return true;
+    }
 
 }//end class

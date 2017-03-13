@@ -128,17 +128,17 @@ public class BattleshipModelTest {
         int orientation = 2;
         int length = 5;
         Coordinate start = new Coordinate(1, 6);
-        assertEquals(model.pointInBounds(start, orientation, length), true);
+        assertEquals(model.shipInBounds(start, orientation, length), true);
         start = new Coordinate(1, 7);
-        assertEquals(model.pointInBounds(start, orientation, length), false);
+        assertEquals(model.shipInBounds(start, orientation, length), false);
 
         //fake vertical aircraft carrier
         orientation = 1;
         length = 5;
         start = new Coordinate(6, 1);
-        assertEquals(model.pointInBounds(start, orientation, length), true);
+        assertEquals(model.shipInBounds(start, orientation, length), true);
         start = new Coordinate(7, 1);
-        assertEquals(model.pointInBounds(start, orientation, length), false);
+        assertEquals(model.shipInBounds(start, orientation, length), false);
 
 
     }
