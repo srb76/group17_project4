@@ -15,7 +15,6 @@ public class BattleshipModel {
     private CivilianShip dinghy = new CivilianShip("Dinghy",1, new Coordinate(0,0),new Coordinate(0,0),false);
 
 
-
     private MilitaryShip computer_aircraftCarrier;
     private MilitaryShip computer_battleship;
     private MilitaryShip computer_submarine;
@@ -81,20 +80,21 @@ public class BattleshipModel {
 
         scanResult = false;
     }
-
+// Refactored getShip into a case statement instead of a mass of cluttered if statements. -GH
     public Ship getShip(String shipName) {
-        if (shipName.equalsIgnoreCase("aircraftCarrier")) {
-            return aircraftCarrier;
-        } if(shipName.equalsIgnoreCase("battleship")) {
-            return battleship;
-        } if(shipName.equalsIgnoreCase("submarine")) {
-            return submarine;
-        } if(shipName.equalsIgnoreCase("clipper")) {
-            return clipper;
-        }if(shipName.equalsIgnoreCase("dinghy")) {
-            return dinghy;
-        } else {
-            return null;
+        switch(shipName) {
+            case "aircraftCarrier":
+                return aircraftCarrier;
+            case "battleship":
+                return battleship;
+            case "submarine":
+                return submarine;
+            case "clipper":
+                return clipper;
+            case "dinghy":
+                return dinghy;
+            default:
+                return null;
         }
     }
 
