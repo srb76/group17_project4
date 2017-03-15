@@ -76,7 +76,7 @@ public class Main {
             res.status(400);
             return result;
         } else //(result == null)
-            currModel.shootAtPlayer();
+            currModel.smartShootAtPlayer();
         Gson gson = new Gson();
         return gson.toJson(currModel);
     }
