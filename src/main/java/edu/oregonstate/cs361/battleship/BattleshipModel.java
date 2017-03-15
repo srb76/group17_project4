@@ -101,8 +101,9 @@ public class BattleshipModel {
         }
     }
 public int enemyShipOrientation(boolean isEasy, int orientation){// This function returns the proper enemy ship orientation depending on game difficulty.
-        if(isEasy == true)
+        if(isEasy == true) {
             return 1;
+        }
 
         else{
             orientation = (Math.random() <= 0.5) ? 1 : 2;
@@ -140,8 +141,8 @@ public int enemyShipRow(boolean isEasy, int row){ // This function returns the p
             //select a random orientation; 1 == vertical; 2 == horizontal
             //random Coordinate for start point
             orientation = enemyShipOrientation(isEasy,orientation);
-            row = enemyShipRow(isEasy,orientation); // sets row using enemyShipRow function
-            col = enemyShipColumn(isEasy,orientation); // sets col using enemyShipColumn function
+            row = enemyShipRow(isEasy,row); // sets row using enemyShipRow function
+            col = enemyShipColumn(isEasy,col); // sets col using enemyShipColumn function
             test = new Coordinate(row, col);
             valid = isValidMove(length, test, orientation);
         }
