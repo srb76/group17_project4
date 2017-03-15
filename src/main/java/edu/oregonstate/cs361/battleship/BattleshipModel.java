@@ -53,6 +53,11 @@ public class BattleshipModel {
     Coordinate firstFireHit;
     String fireDirection;
 
+    //Easy AI Fire vars
+    private int computerFireRow = 1;
+    private int computerFireCol = 1;
+    private boolean computerAltFire = false;
+
     //Maximum board size
     private static final int BOARD_SIZE = 10;
 
@@ -535,6 +540,37 @@ public int enemyShipRow(boolean isEasy, int row){ // This function returns the p
 
         if(civilianHit == null && miliatryHit == null)
             playerMisses.add(coor[0]);
+
+    }
+
+    public void easyComputerFire() {
+        //Uses computerFireRow and computerFireCol to fire at every other space
+
+        //Call fireAtPlayer at current location
+        shootAtPlayer(computerFireRow, computerFireCol);
+
+        //Increment firing location column
+        computerFireCol += 2;
+
+        //Move to next row if end of a column, start at column index 1 of new row
+        if (computerFireCol > (BOARD_SIZE - 1) && !computerAltFire) {
+            computerFireCol = 1;
+            computerFireRow++;
+        }
+        //Start at column index 2 if in alternate firing mode
+        else if (computerFireCol > BOARD_SIZE && computerAltFire) {
+            computerFireCol = 2;
+            computerFireRow++;
+        }
+
+        //If last row, change firing mode to target skipped spaces
+        if (computerFireRow > BOARD_SIZE)
+        {
+            computerAltFire = true;
+            //Start new firing at (1,2)
+            computerFireRow = 1;
+            computerFireCol = 2;
+        }
 
     }
 
