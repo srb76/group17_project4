@@ -15,7 +15,6 @@ public class BattleshipModel {
     private CivilianShip dinghy = new CivilianShip("Dinghy",1, new Coordinate(0,0),new Coordinate(0,0),false);
 
 
-
     private MilitaryShip computer_aircraftCarrier;
     private MilitaryShip computer_battleship;
     private MilitaryShip computer_submarine;
@@ -67,11 +66,11 @@ public class BattleshipModel {
         playerCivilianShips = new CivilianShip[2];
 
 
-        computer_aircraftCarrier = (MilitaryShip) placeEnemyShip("Computer_AircraftCarrier", 5);
-        computer_battleship = (MilitaryShip) placeEnemyShip("Computer_Battleship",4);
-        computer_submarine = (MilitaryShip) placeEnemyShip("Computer_Submarine",2);
-        computer_clipper = (CivilianShip) placeEnemyShip("Computer_Clipper",3);
-        computer_dinghy = (CivilianShip) placeEnemyShip("Computer_Dinghy",1);
+        computer_aircraftCarrier = (MilitaryShip) placeEnemyShip("Computer_AircraftCarrier", 5,true);
+        computer_battleship = (MilitaryShip) placeEnemyShip("Computer_Battleship",4,true);
+        computer_submarine = (MilitaryShip) placeEnemyShip("Computer_Submarine",2,true);
+        computer_clipper = (CivilianShip) placeEnemyShip("Computer_Clipper",3,true);
+        computer_dinghy = (CivilianShip) placeEnemyShip("Computer_Dinghy",1,true);
 
         enemyMilitaryShips[0] = (computer_aircraftCarrier);
         enemyMilitaryShips[1] = (computer_battleship);
@@ -84,25 +83,51 @@ public class BattleshipModel {
 
         scanResult = false;
     }
-
+// Refactored getShip into a case statement instead of a mass of cluttered if statements. -GH
     public Ship getShip(String shipName) {
-        if (shipName.equalsIgnoreCase("aircraftCarrier")) {
-            return aircraftCarrier;
-        } if(shipName.equalsIgnoreCase("battleship")) {
-            return battleship;
-        } if(shipName.equalsIgnoreCase("submarine")) {
-            return submarine;
-        } if(shipName.equalsIgnoreCase("clipper")) {
-            return clipper;
-        }if(shipName.equalsIgnoreCase("dinghy")) {
-            return dinghy;
-        } else {
-            return null;
+        switch(shipName) {
+            case "aircraftCarrier":
+                return aircraftCarrier;
+            case "battleship":
+                return battleship;
+            case "submarine":
+                return submarine;
+            case "clipper":
+                return clipper;
+            case "dinghy":
+                return dinghy;
+            default:
+                return null;
         }
     }
+public int enemyShipOrientation(boolean isEasy, int orientation){// This function returns the proper enemy ship orientation depending on game difficulty.
+        if(isEasy == true)
+            return 1;
 
+        else{
+            orientation = (Math.random() <= 0.5) ? 1 : 2;
+            return orientation;
+        }
+}
+public int enemyShipColumn(boolean isEasy, int col){// This function returns the proper enemy ship column depending on game difficulty.
+    if(isEasy == true){
+        return col = col+1;
+    }
+    else{
+        return col = (int) (Math.random() * BOARD_SIZE) + 1;
+    }
 
-    public Ship placeEnemyShip(String name, int length){
+}
+public int enemyShipRow(boolean isEasy, int row){ // This function returns the proper enemy ship row depending on game difficulty.
+    if(isEasy == true){
+        return 5;
+    }
+    else{
+        return row = (int) (Math.random() * BOARD_SIZE) + 1;
+    }
+}
+
+    public Ship placeEnemyShip(String name, int length, boolean isEasy){//Difficulty decides if the ships are to be placed randomly or statically.
 
         boolean valid = false;
         boolean visibleShip = true;
@@ -114,13 +139,12 @@ public class BattleshipModel {
         while(!valid) {
             //select a random orientation; 1 == vertical; 2 == horizontal
             //random Coordinate for start point
-            orientation = (Math.random() <= 0.5) ? 1 : 2;
-            row = (int) (Math.random() * BOARD_SIZE) + 1;
-            col = (int) (Math.random() * BOARD_SIZE) + 1;
+            orientation = enemyShipOrientation(isEasy,orientation);
+            row = enemyShipRow(isEasy,orientation); // sets row using enemyShipRow function
+            col = enemyShipColumn(isEasy,orientation); // sets col using enemyShipColumn function
             test = new Coordinate(row, col);
             valid = isValidMove(length, test, orientation);
         }
-
         Coordinate startCoordinate;
         Coordinate endCoordinate;
 
