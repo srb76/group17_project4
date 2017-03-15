@@ -455,7 +455,6 @@ public int enemyShipRow(boolean isEasy, int row){ // This function returns the p
                                 //unless the ship was sunk
                                 if(!playerShipsSunk.contains(military)) {
                                     fireDirection = getDirection(firstFireHit, test[0]);
-
                                 }
                             }
                             break;
@@ -519,9 +518,6 @@ public int enemyShipRow(boolean isEasy, int row){ // This function returns the p
         while(checkForDuplicatePoints(coor, playerMisses) || checkForDuplicatePoints(coor, playerHits)){
                 coor[0] = getRandomCoordinate();
         }
-
-        boolean hit = false;
-
         Ship civilianHit = checkCivilianHit(coor[0]);
         Ship miliatryHit = checkMilitaryHit(coor[0]);
 

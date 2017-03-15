@@ -184,6 +184,8 @@ public class BattleshipModelTest {
     }
 
 
+    //this makes sure that smart fire adds a hit or miss every time its called
+    //this method asserts that smart fire will sink all ships
     @Test
     public void smartShootAtPlayer(){
         model = new BattleshipModel();
@@ -202,10 +204,16 @@ public class BattleshipModelTest {
             count++;
         }
         assertEquals(model.getShip("aircraftCarrier").isSunk(), true);
+        assertEquals(model.getShip("battleship").isSunk(), true);
+        assertEquals(model.getShip("submarine").isSunk(), true);
+        assertEquals(model.getShip("clipper").isSunk(), true);
+        assertEquals(model.getShip("dinghy").isSunk(), true);
         assertEquals(count + 2, model.getMissArraySize() + model.getHitArraySize());
 
     }
 
+    //this test fires at both civilian ships
+    //build a new model and shoots at the other end of the clipper
     @Test
     public void smartShootAtCivilian(){
         model = new BattleshipModel();
@@ -244,19 +252,21 @@ public class BattleshipModelTest {
 
     }
 
+    //this test shoots at the middle of the battleship and asserts that the AI will
+    //go to the top and then turn around once it misses
     @Test
     public void smartShootAtPlayerBattleshipMiddleStart(){
         model = new BattleshipModel();
         //Places a player ship
-        model.placeShip("battleship","1","8","vertical");
+        model.placeShip("battleship","2","8","vertical");
         model.placeShip("aircraftCarrier","2","1","horizontal");
         model.placeShip("submarine","3","1","horizontal");
         model.placeShip("clipper","4","1","horizontal");
         model.placeShip("dinghy","5","1","horizontal");
 
-        model.shootAtPlayer(2,8);
+        model.shootAtPlayer(3,8);
         assertEquals(1, model.getMissArraySize()+ model.getHitArraySize());
-        assertEquals(2, model.firstFireHit.getAcross());
+        assertEquals(3, model.firstFireHit.getAcross());
         assertEquals(8, model.firstFireHit.getDown());
         model.smartShootAtPlayer();
         assertEquals(null, model.fireDirection);
@@ -267,18 +277,25 @@ public class BattleshipModelTest {
         model.smartShootAtPlayer();
         assertEquals("up", model.fireDirection);
         assertEquals(2, model.getHitArraySize());
-        assertEquals(1, model.lastFired.getAcross());
+        assertEquals(2, model.lastFired.getAcross());
         assertEquals(8, model.lastFired.getDown());
         model.smartShootAtPlayer();
         assertEquals("down", model.fireDirection);
+        assertEquals(2, model.getHitArraySize());
+        assertEquals(3, model.getMissArraySize());
+        model.smartShootAtPlayer();
+        assertEquals("down", model.fireDirection);
         assertEquals(3, model.getHitArraySize());
-        assertEquals(3, model.lastFired.getAcross());
+        assertEquals(3, model.getMissArraySize());
+        assertEquals(4, model.lastFired.getAcross());
         assertEquals(8, model.lastFired.getDown());
         model.smartShootAtPlayer();
         assertEquals(null, model.fireDirection);
         assertEquals(4, model.getHitArraySize());
         assertEquals(null, model.lastFired);
     }
+    //this test shoots at the top of the battleship and asserts that the AI will
+    //miss and then turn around and fire in opposite direction
     @Test
     public void smartShootAtPlayerBattlshipTopStart(){
         model = new BattleshipModel();
@@ -315,6 +332,8 @@ public class BattleshipModelTest {
         assertEquals(null, model.lastFired);
     }
 
+    //this test shoots at the bottom of the battleship and asserts that the AI will
+    //fire up all the way to the top
     @Test
     public void smartShootAtPlayerBattlshipBottomStart(){
         model = new BattleshipModel();
@@ -351,6 +370,8 @@ public class BattleshipModelTest {
         assertEquals(null, model.lastFired);
     }
 
+    //this test shoots at the middle of the aircraftcarrier and asserts that the AI will
+    //go to the left and then turn around once it misses
     @Test
     public void smartShootAtPlayerAircraftCarrierMiddleStart(){
         model = new BattleshipModel();
@@ -388,6 +409,8 @@ public class BattleshipModelTest {
         assertEquals(5, model.getHitArraySize());
         assertEquals(null, model.lastFired);
     }
+    //this test shoots at the left of the aircraftcarrier and asserts that the AI will
+    //miss and then turn around and fire in the opposite direction
     @Test
     public void smartShootAtPlayerAircraftCarrierBeginningStart(){
         model = new BattleshipModel();
@@ -422,6 +445,8 @@ public class BattleshipModelTest {
         assertEquals(5, model.getHitArraySize());
         assertEquals(null, model.lastFired);
     }
+    //this test shoots at the middle of the submarine and asserts that the AI will
+    //go to the left and then turn around once it misses
     @Test
     public void smartShootAtPlayerSubEndStart(){
         model = new BattleshipModel();
@@ -443,6 +468,8 @@ public class BattleshipModelTest {
         assertEquals(0, model.getMissArraySize());
 
     }
+    //this test shoots at the middle of the aircraftcarrier and asserts that the AI will
+    //try left, miss and then turn around and hit the last coord
     @Test
     public void smartShootAtPlayerSubStart(){
         model = new BattleshipModel();
@@ -486,6 +513,7 @@ public class BattleshipModelTest {
 
     }
 
+    //test getScanresult function
     @Test
     public void getScanResult() throws Exception {
         boolean result;
@@ -493,7 +521,7 @@ public class BattleshipModelTest {
         result = model.getScanResult();
         assertFalse(result);
     }
-
+    //test scan function
     @Test
     public void scan() throws Exception {
         boolean result;
