@@ -550,9 +550,18 @@ updates the cooresponding arrays with the ships points */
 
     public void easyComputerFire() {
         //Uses computerFireRow and computerFireCol to fire at every other space
+        //If this function encounters a space that has already been hit in its pattern, it will call itself to fire again
+        boolean alreadyHit = false;
+        Coordinate[] fireLocation = new Coordinate[1];
+        fireLocation[0] = new Coordinate(computerFireRow,computerFireCol);
 
-        //Call fireAtPlayer at current location
-        shootAtPlayer(computerFireRow, computerFireCol);
+        //Check if firing location is already in playerHits, fire if it is not a duplicate
+        if (checkForDuplicatePoints(fireLocation,playerHits) )
+            alreadyHit = true;
+        else
+            //Fire if not already a sunk position
+            shootAtPlayer(computerFireRow, computerFireCol);
+
 
         //Increment firing location column
         computerFireCol += 2;
@@ -577,6 +586,9 @@ updates the cooresponding arrays with the ships points */
             computerFireCol = 2;
         }
 
+        //If already hit, call this function again to attempt to shoot again
+        if (alreadyHit)
+            easyComputerFire();
     }
 
     public boolean getScanResult(){
