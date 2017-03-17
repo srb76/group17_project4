@@ -274,85 +274,90 @@ public int enemyShipRow(boolean isEasy, int row){ // This function returns the p
     }
 
 
-
+/*Checks if ship placement at specified location would be inbounds, not overlap any other ships, and then
+updates the cooresponding arrays with the ships points */
     public String placeShip(String shipName, String AcrossS, String DownS, String orientation) {
-
+        //Initialize vars
         int Across = Integer.parseInt(AcrossS);
         int Down = Integer.parseInt(DownS);
+
+        int size, endDown, endAcross;
+        endDown = endAcross = 0;
+
+        Ship placingShip;
+        MilitaryShip testShip;
+
+        Coordinate start, end, toAdd;
+        toAdd = new Coordinate(0,0);
+        Coordinate[] myPoints;
+
+        //Get the ship and assign it to placingShip
+        placingShip = getShip(shipName);
+
+        //Get size of ship and use it to create myPoints Coordinate array
+        size = getShip(shipName).getLength();
+        myPoints = new Coordinate[size];
+
+        //Return error string if coordinate is off board
         if(Down > BOARD_SIZE || Across > BOARD_SIZE)
             return "Ship Placement out of bounds";
-        int size;
-        int endDown;
-        int endAcross;
-        size = getShip(shipName).getLength();
-        MilitaryShip testShip;
-        if(orientation.equals("vertical")){
+
+        //Set endDown and endAcross based on orientation
+        if(orientation.equals("vertical")) {
             endDown = Down;
             endAcross = Across + size - 1;
-            if(endAcross > BOARD_SIZE)
-                return "Ship Placement out of bounds";
-            Coordinate start = new Coordinate(Across, Down);
-            Coordinate end = new Coordinate(endAcross, endDown);
-            testShip = new MilitaryShip("test", size, start, end, false);
-            for(int i = 0; i < playerShipPoints.size(); i++){
-                //System.out.println("using test ship");
-                if(testShip.covers(playerShipPoints.get(i)))
-                    return "Placement overlaps another ship";
-            }
-            Coordinate[] myPoints = new Coordinate[size];
-            for(int i = 0; i < size; i++){
-                Coordinate toAdd = new Coordinate(Across + i, Down);
-                playerShipPoints.add(toAdd);
-                myPoints[i] = toAdd;
-            }
-            getShip(shipName).setLocation(start, end);
-            if(shipName.equals("aircraftCarrier") || shipName.equals("battleship") || shipName.equals("submarine")){
-                getShip(shipName).setLocation(start, end);
-                getShip(shipName).setPoints(myPoints);
-                playerMilitaryShips[militaryPlaceIndex] = (MilitaryShip) getShip(shipName);
-                militaryPlaceIndex++;
-            }
-            else{
-                getShip(shipName).setLocation(start, end);
-                getShip(shipName).setPoints(myPoints);
-                playerCivilianShips[civilianPlaceIndex] = (CivilianShip) getShip(shipName);
-                civilianPlaceIndex++;
-            }
-        } else { //horizantal
-            if((Down + size -1) > BOARD_SIZE)
-                return "Ship Placement out of bounds";
+        }
+        else if(orientation.equals("horizontal")) {
             endDown = Down + size -1;
             endAcross = Across;
-            if(endDown > BOARD_SIZE )
-                return "Ship placement out of bounds";
-            Coordinate start = new Coordinate(Across, Down);
-            Coordinate end = new Coordinate(endAcross, endDown);
-            testShip = new MilitaryShip("test", size, start, end, false);
-            for(int i = 0; i < playerShipPoints.size(); i++){
-                if(testShip.covers(playerShipPoints.get(i)))
-                    return "Placement overlaps another ship";
-            }
-            Coordinate[] myPoints = new Coordinate[size];
-            for(int i = 0; i < size; i++){
-                Coordinate toAdd = new Coordinate( Across, Down + i);
-                playerShipPoints.add(toAdd);
-                myPoints[i] = toAdd;
-            }
-            if(shipName.equalsIgnoreCase("aircraftCarrier") || shipName.equalsIgnoreCase("battleship") || shipName.equalsIgnoreCase("submarine")){
-                getShip(shipName).setLocation(start, end);
-                getShip(shipName).setPoints(myPoints);
-                playerMilitaryShips[militaryPlaceIndex] = (MilitaryShip) getShip(shipName);
-                militaryPlaceIndex++;
-            }
-            else{
-                getShip(shipName).setLocation(start, end);
-                getShip(shipName).setPoints(myPoints);
-                playerCivilianShips[civilianPlaceIndex] = (CivilianShip) getShip(shipName);
-                civilianPlaceIndex++;
-            }
         }
 
+        //Return error string if ship would go off board
+        if(endAcross > BOARD_SIZE || endDown > BOARD_SIZE)
+            return "Ship Placement out of bounds";
+
+        //Create new start and end coordinates for ship
+        start = new Coordinate(Across, Down);
+        end = new Coordinate(endAcross, endDown);
+        testShip = new MilitaryShip("test", size, start, end, false);
+
+        //Test if ship position would overlap any other ship
+        for(int i = 0; i < playerShipPoints.size(); i++){
+            if(testShip.covers(playerShipPoints.get(i)))
+                return "Placement overlaps another ship";
+        }
+
+        //Add ship coordinates to playerShipPoints
+        for(int i = 0; i < size; i++){
+            //If vertical, move along across or row
+            if (orientation.equals("vertical"))
+                toAdd = new Coordinate(Across + i, Down);
+            //If horizontal, move along Down or column
+            else if (orientation.equals("horizontal"))
+                toAdd = new Coordinate(Across,Down+i);
+
+            playerShipPoints.add(toAdd);
+            myPoints[i] = toAdd;
+        }
+
+        //Set location of ship, assign points, and then add to corresponding player ship array
+        placingShip.setLocation(start,end);
+        placingShip.setPoints(myPoints);
+
+        //Military
+        if (placingShip instanceof MilitaryShip) {
+            playerMilitaryShips[militaryPlaceIndex] = (MilitaryShip)placingShip;
+            militaryPlaceIndex++;
+        }
+        //Civilian
+        else if (placingShip instanceof CivilianShip) {
+            playerCivilianShips[civilianPlaceIndex] = (CivilianShip)placingShip;
+            civilianPlaceIndex++;
+        }
+
+        //Ship was placed successfully, return null
         return null;
+
     }
 
     public String shootAtComputer(int row, int col) {
